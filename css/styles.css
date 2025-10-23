@@ -1,0 +1,323 @@
+/* ---------- RESET ---------- */
+* { 
+    box-sizing:border-box; 
+    margin:0; 
+    padding:0; 
+}
+
+html,body { 
+    height:100%; 
+    font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; 
+    background:#0a0f1e; color:#e5f2ff; 
+}
+
+body{
+  min-height:100dvh;
+  display:flex;
+  flex-direction:column;
+}
+main.container{ flex:1 0 auto; }
+
+
+/* ---------- THEME ---------- */
+:root{
+--neon-blue:#3be3ff; 
+--neon-cyan:#40ffd9; 
+--neon-pink:#ff4dce; 
+--neon-yellow:#ffd23b;
+--panel:#0f152c; 
+--panel-2:#0c1124; 
+--muted:#9db3d9; 
+--danger:#ff5561; 
+--success:#35e58b;
+--shadow:0 10px 30px rgba(0,0,0,.45), inset 0 0 50px rgba(59,227,255,.06);
+}
+
+/* ---------- LAYOUT ---------- */
+.container { 
+    max-width:1100px; 
+    margin:0 auto; 
+    padding:24px; }
+
+@media (max-width:600px){ 
+    .container{ 
+        padding:16px; 
+    } 
+}
+
+/* Topbar */
+.topbar{ 
+    position:sticky; 
+    top:0; z-index:10; 
+    background:linear-gradient(180deg,rgba(10,15,30,.95),rgba(10,15,30,.75)); 
+    border-bottom:1px solid rgba(64,255,217,.15); 
+    backdrop-filter:blur(8px); 
+}
+
+.topbar-inner{ 
+    display:flex; 
+    align-items:center; 
+    justify-content:space-between; 
+    gap:16px; 
+    padding:14px 24px; }
+.brand{ 
+    display:flex; 
+    align-items:center; 
+    gap:10px; 
+    letter-spacing:.5px; 
+    color:#dfeaff; 
+    font-weight:700; }
+
+.brand .dot{ 
+    width:10px; 
+    height:10px;
+    border-radius:50%; 
+    background:radial-gradient(circle at 50% 50%, var(--neon-cyan), #0ff 60%, transparent 70%); 
+    box-shadow:0 0 12px var(--neon-cyan); 
+}
+
+.btn{ 
+    appearance:none; 
+    border:none; 
+    cursor:pointer; 
+    font-weight:700; 
+    letter-spacing:.3px; 
+    padding:10px 16px; 
+    border-radius:14px; 
+    background:linear-gradient(90deg, rgba(64,255,217,.14), rgba(59,227,255,.12)); 
+    color:#dff7ff; outline:none; box-shadow:var(--shadow); 
+    border:1px solid rgba(64,255,217,.25); 
+    transition:transform .15s, box-shadow .2s, border-color .2s; 
+}
+
+.btn:hover{ 
+    transform:translateY(-1px); 
+    box-shadow:0 14px 38px rgba(64,255,217,.25); 
+    border-color:rgba(64,255,217,.5); 
+}
+
+.btn.ghost{ 
+    background:transparent; 
+    border-color:rgba(157,179,217,.3); 
+    color:#bcd0ff; 
+}
+
+.btn.danger{ 
+    border-color:rgba(255,85,97,.5); color:#ffd7dc; 
+}
+
+.btn.primary{ 
+    background:linear-gradient(90deg, rgba(64,255,217,.22), rgba(59,227,255,.18)); 
+}
+
+/* ---------- HERO (pakai template.jpg) ---------- */
+.hero{
+    position:relative; 
+    width:100%;
+    aspect-ratio:651/256;                
+    border-radius:18px; 
+    overflow:hidden; 
+    margin:24px auto;
+    border:1px solid rgba(64,255,217,.2); 
+    box-shadow:var(--shadow); 
+    background:#060b18;
+}
+
+.hero .bg{
+    position:absolute; 
+    inset:0;
+    background:url('../asset/template.jpg') center/cover no-repeat;   /* desktop: cover */
+    filter:saturate(110%) contrast(105%) brightness(95%);
+}
+.hero::after{
+    content:""; position:absolute; inset:0;
+    background:radial-gradient(120% 100% at 50% 50%, rgba(0,0,0,0) 0%, rgba(0,0,0,.32) 65%, rgba(0,0,0,.55) 100%);
+    pointer-events:none;
+}
+
+/* Skor */
+.hero-score{
+    position:absolute; 
+    top:50%; 
+    transform:translateY(-50%);
+    width:clamp(80px, 12vw, 40px); 
+    height:clamp(60px, 10vw, 90px);
+    display:grid; 
+    place-items:center; 
+    border-radius:18px;
+    background:linear-gradient(180deg, rgba(12,17,36,.55), rgba(12,17,36,.35));
+    border:1px solid rgba(64,255,217,.25); 
+    box-shadow:var(--shadow);
+}
+
+.hero-score .num{
+    font-size:clamp(56px, 7vw, 42px); 
+    font-weight:800; 
+    letter-spacing:1px;
+    background:linear-gradient(180deg,#fff,#c9f9ff 55%,#7bfbe0);
+    -webkit-background-clip:text; 
+    -webkit-text-fill-color:transparent;
+    text-shadow:0 0 22px rgba(59,227,255,.45);
+}
+
+/* Desktop offset: pakai punyamu */
+.hero-score.left  { left: clamp(232px, 1vw, 28px); }
+.hero-score.right { right: clamp(232px, 1vw, 18px); }
+
+/* Smartphone: tidak crop + posisi stabil pakai persen */
+/* Rasio sama untuk semua device */
+.hero{ aspect-ratio:651/256; }
+
+/* HP: gambar full masuk, tidak crop */
+.hero{ aspect-ratio:651/256; } /* rasio asli gambar, berlaku di semua device */
+@media (max-width:600px){
+    .hero .bg{
+    background-size: contain;        /* di HP: gambar full, tidak terpotong */
+    background-repeat: no-repeat;
+    background-color:#060b18;        /* letterbox */
+    }
+    .topbar{
+        padding-inline: 5px;
+        padding-block: 10px;
+    }
+    .container{
+        max-width: 95vw;
+    }
+    .hero{
+        
+        padding-inline: 5px;
+        padding-block: 10px;
+    }
+    .hero-score{
+        width: clamp(50px, 23vw, 60px);
+        height: clamp(14px, 27vw, 64px);
+    }
+    .hero-score.left{  left:31%; }
+    .hero-score.right{ right:31%; }
+    .hero-score .num{ font-size: clamp(42px, 2.5vw, 72px); }
+    .footer {
+        font-size:52px;
+    }
+}
+@media (max-width:380px){
+    .hero-score{ width:clamp(62px,26vw,88px); height:clamp(46px,19vw,72px); }
+    .hero-score.left{ left:10%; } .hero-score.right{ right:10%; }
+    .hero-score .num{ font-size: clamp(62px, 6.5vw, 72px); }
+}
+
+/* ---------- TABLE / PANEL ---------- */
+.panel{
+    background: linear-gradient(180deg, var(--panel), var(--panel-2));
+    border:1px solid rgba(64,255,217,.15);
+    border-radius:18px;
+    box-shadow: var(--shadow);
+    padding:18px;
+    overflow-x: auto;                  /* penting: aktifkan scroll horizontal */
+    -webkit-overflow-scrolling: touch; /* momentum scrolling di iOS */
+}
+
+/* Tabel default (desktop) tetap */
+.table{
+    width:100%;
+    border-collapse:separate;
+    border-spacing:0 10px;
+    margin-top:6px;
+    min-width: 720px;                  /* jaga lebar minimum agar kolom tidak pecah */
+}
+
+.table thead th{ 
+        text-align:left; 
+        font-size:12px; 
+        letter-spacing:.6px; 
+        color:#8fb3ff; 
+        font-weight:800; 
+        padding:10px 12px; 
+}
+
+.table tbody tr{ 
+    background:rgba(12,17,36,.6); 
+}
+
+.table tbody tr td{ 
+    padding:12px; 
+    border-top:1px solid rgba(157,179,217,.12); 
+    border-bottom:1px solid rgba(157,179,217,.12); 
+}
+
+.table tbody tr td:first-child{ 
+    border-left:1px solid rgba(157,179,217,.12); 
+    border-radius:10px 0 0 10px; 
+}
+
+.table tbody tr td:last-child{ 
+    border-right:1px solid rgba(157,179,217,.12); 
+    border-radius:0 10px 10px 0; 
+}
+
+.badge{ 
+    font-size:12px; 
+    padding:6px 10px; 
+    border-radius:999px;
+    border:1px solid rgba(255,255,255,.12); 
+}
+
+.badge.ok{ 
+    border-color:rgba(53,229,139,.4); 
+    color:#ccffe6; 
+}
+
+.badge.no{ 
+    border-color:rgba(255,85,97,.45); 
+    color:#ffd6de; 
+}
+
+/* ====== TABEL: MODE MOBILE (kartu/stack) ====== */
+/* Kompakkan untuk layar kecil tanpa mengubah struktur */
+@media (max-width:700px){
+    .panel{ scale:1; }
+    .container{ padding:14px; }
+
+    .table{ min-width: 680px; }        /* sedikit lebih kecil dari desktop */
+.table thead th{ font-size:11px; padding:8px 10px; }
+.table tbody tr td{ padding:8px 10px; }
+.badge{ font-size:11px; padding:4px 8px; } */
+
+/* rapikan spasi baris agar hemat tinggi */
+.table tbody tr{ background:rgba(12,17,36,.55); }
+.table tbody tr td:first-child{ 
+    border-left:1px solid rgba(157,179,217,.12); 
+    border-radius:10px 0 0 10px;}
+.table tbody tr td:last-child{ 
+    border-right:1px solid rgba(157,179,217,.12); 
+    border-radius:0 10px 10px 0; }
+}
+
+/* ---------- FOOTER ---------- */
+.footer{
+  margin-top:20px;
+  padding:14px 0;
+  color:var(--muted);
+  font-size:12px;
+  letter-spacing:.3px;
+  text-align:center;
+
+  border-top:1px solid rgba(157,179,217,.14);
+  background:linear-gradient(180deg, rgba(12,17,36,.35), rgba(12,17,36,.15));
+  box-shadow:0 -8px 24px rgba(0,0,0,.25) inset;
+  border-radius:0 0 14px 14px; /* menyatu manis dengan panel di atas */
+}
+
+.footer a{
+  color:#dff7ff;
+  text-decoration:none;
+  border-bottom:1px dotted rgba(223,247,255,.35);
+}
+.footer a:hover{ border-bottom-color: rgba(223,247,255,.75); }
+
+/* Mobile */
+@media (max-width:600px){
+  .footer{
+    font-size:15px;
+    padding:12px 0;
+  }
+}

@@ -1,0 +1,148 @@
+/* ---------- RESET & BASE ---------- */
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{
+  height:100%;
+  font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+  background:#0a0f1e; color:#e5f2ff;
+}
+:root{
+  --neon-blue:#3be3ff; --neon-cyan:#40ffd9; --neon-pink:#ff4dce; --neon-yellow:#ffd23b;
+  --panel:#0f152c; --panel-2:#0c1124; --muted:#9db3d9; --danger:#ff5561; --success:#35e58b;
+  --shadow:0 10px 30px rgba(0,0,0,.45), inset 0 0 50px rgba(59,227,255,.06);
+}
+
+/* container agar kartu terpusat vertikal */
+.container{
+  max-width:1100px; margin:0 auto; padding:24px;
+  min-height:calc(100dvh - 64px); /* sisakan tinggi topbar */
+  display:grid; place-items:center;
+}
+
+/* ---------- TOPBAR (pakai gaya umum) ---------- */
+.topbar{position:sticky;top:0;z-index:10;background:linear-gradient(180deg,rgba(10,15,30,.95),rgba(10,15,30,.75));border-bottom:1px solid rgba(64,255,217,.15);backdrop-filter:blur(8px)}
+.topbar-inner{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 24px}
+.brand{display:flex;align-items:center;gap:10px;letter-spacing:.5px;color:#dfeaff;font-weight:700}
+.brand .dot{width:10px;height:10px;border-radius:50%;background:radial-gradient(circle at 50% 50%, var(--neon-cyan), #0ff 60%, transparent 70%);box-shadow:0 0 12px var(--neon-cyan)}
+.btn{appearance:none;border:1px solid rgba(64,255,217,.25);cursor:pointer;font-weight:700;letter-spacing:.3px;padding:10px 16px;border-radius:14px;background:linear-gradient(90deg, rgba(64,255,217,.14), rgba(59,227,255,.12));color:#dff7ff;box-shadow:var(--shadow);transition:transform .15s, box-shadow .2s, border-color .2s}
+.btn:hover{transform:translateY(-1px);box-shadow:0 14px 38px rgba(64,255,217,.25);border-color:rgba(64,255,217,.5)}
+.btn.ghost{background:transparent;border-color:rgba(157,179,217,.3);color:#bcd0ff}
+.btn.primary{background:linear-gradient(90deg, rgba(64,255,217,.22), rgba(59,227,255,.18))}
+
+/* ---------- CARD LOGIN ---------- */
+.card{
+  position:relative;
+  width:min(560px, 92vw);
+  padding:26px 26px 22px;
+  border-radius:20px;
+  background:linear-gradient(180deg, rgba(18,26,52,.85), rgba(12,17,36,.7));
+  border:1px solid rgba(64,255,217,.18);
+  box-shadow:
+    0 20px 50px rgba(0,0,0,.45),
+    0 0 0 1px rgba(64,255,217,.08) inset;
+  backdrop-filter: blur(6px);
+  overflow:hidden;
+}
+
+/* aksen soft animasi di tepi kartu */
+.card::before{
+  content:""; position:absolute; inset:-2px;
+  background: conic-gradient(from 180deg,
+    rgba(64,255,217,.0), rgba(64,255,217,.18),
+    rgba(59,227,255,.0), rgba(255,77,206,.12),
+    rgba(64,255,217,.0));
+  filter: blur(18px); opacity:.35; z-index:0;
+  animation: spin 16s linear infinite;
+}
+@keyframes spin{ to{ transform: rotate(360deg) }}
+
+/* header kartu */
+.card h2{
+  position:relative; z-index:1;
+  margin-bottom:8px; letter-spacing:.4px;
+  background:linear-gradient(180deg,#fff,#c9f9ff 55%,#7bfbe0);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  text-shadow:0 0 24px rgba(59,227,255,.35);
+}
+.card .sub{ position:relative; z-index:1; color:var(--muted); margin-bottom:18px }
+
+/* ---------- FORM ---------- */
+.form-row{ position:relative; z-index:1; display:flex; flex-direction:column; gap:14px; margin:18px 0 14px }
+
+/* label */
+.form-row label{
+  color:#cfe1ff; font-size:13px; margin:2px 2px 6px; letter-spacing:.2px; opacity:.9
+}
+
+/* input */
+.select{
+  width:100%; padding:12px 14px;
+  background:linear-gradient(180deg, rgba(12,17,36,.65), rgba(12,17,36,.5));
+  border:1px solid rgba(157,179,217,.22);
+  border-radius:14px; color:#e5f2ff; font-size:14px; outline:none;
+  box-shadow: inset 0 2px 12px rgba(0,0,0,.25);
+  transition:border-color .2s, box-shadow .2s, transform .06s;
+}
+.select::placeholder{ color:#8aa3cf }
+.select:focus{
+  border-color: rgba(64,255,217,.55);
+  box-shadow:0 0 0 3px rgba(64,255,217,.18), 0 10px 24px rgba(59,227,255,.12);
+  transform: translateY(-1px);
+}
+
+/* tombol & aksi */
+.actions{
+  position:relative; z-index:1;
+  display:flex; justify-content:space-between; gap:14px; margin-top:10px
+}
+.actions .btn.primary{
+  padding:12px 18px; border-radius:16px;
+  box-shadow:0 10px 22px rgba(64,255,217,.18), inset 0 1px 0 rgba(255,255,255,.05);
+}
+.actions .btn.primary:active{ transform:translateY(0) scale(.98) }
+
+/* pesan error/info */
+#msg{ margin-top:12px; font-size:13px; color:#ffb8c7 }
+
+/* ---------- FOOTER (rapi & senada) ---------- */
+.footer{
+  width:100%; text-align:center; color:var(--muted); font-size:12px;
+  margin-top:22px; padding-top:14px;
+  border-top:1px solid rgba(157,179,217,.14);
+  background:linear-gradient(180deg, rgba(12,17,36,.35), rgba(12,17,36,.15));
+  box-shadow:0 -8px 24px rgba(0,0,0,.25) inset;
+  border-radius:0 0 14px 14px;
+}
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width:560px){
+  .card{ 
+    padding:22px 18px;
+    margin: 30px 6px;
+    width: calc(100vw - 82px);
+ }
+ .form-row{ margin:18px 0 44px;
+    color: #0ff; 
+}
+  .actions{ flex-direction:column; align-items:stretch }
+  .actions .btn{ width:100% }
+  .topbar-inner{ padding:12px 16px }
+}
+/* ---------- RESPONSIVE ---------- */
+@media (max-width: 480px) {
+  .card {
+    margin: 30px 16px;
+    padding: 20px;
+  }
+  .form-row {
+    gap: 10px;
+  }
+  .btn {
+    width: 100%;
+  }
+}
+
+
+/* sedikit breathing room pada layar super besar */
+@media (min-width:1280px){
+  .card{ transform: translateY(-10px) }
+}

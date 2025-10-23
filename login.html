@@ -1,82 +1,87 @@
 <!doctype html>
 <html lang="id">
-<head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Login Admin</title>
-<link rel="stylesheet" href="styles.css"/>
-</head>
-<body>
-<header class="topbar">
-    <div class="topbar-inner">
-    <div class="brand"><span class="dot"></span> Scoreboard Arena</div>
-    <nav>
-        <a class="btn ghost" href="index.html">Home</a>
-    </nav>
-    </div>
-</header>
+    <head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <title>Login Admin</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/login.css">
+    <link rel="icon" href="asset/mktlogo.png">
+    </head>
+    <body>
+        <header class="topbar">
+            <div class="topbar-inner">
+                <div class="brand"><span class="dot"></span> MKT IGR vs TMI/GA United</div>
+                <nav>
+                    <a class="btn ghost" href="index.html">Home</a>
+            </nav>
+            </div>
+        </header>
 
-<main class="container">
-    <div class="card">
-    <h2 style="margin-bottom:10px">Login Admin</h2>
-    <p class="sub" style="margin-bottom:18px">Masukkan username & password untuk menginput statistik.</p>
+        <main class="container">
+            <div class="card">
+                <h2 style="margin-bottom:10px">Login Admin</h2>
+                <p class="sub" style="margin-bottom:18px">Masukkan username & password untuk menginput statistik.</p>
 
-    <div class="form-row">
-        <div>
-        <label class="sub">Username</label>
-        <input id="username" class="select" placeholder="Masukan Username" />
-        </div>
-        <div>
-        <label class="sub">Password</label>
-        <input id="password" type="password" class="select" placeholder="Masukan Password" />
-        </div>
-    </div>
-    <div class="actions">
-        <button id="btnLogin" class="btn primary">Login</button>
-        <a class="btn ghost" href="index.html">Kembali ke Home</a>
-    </div>
-    <div id="msg" style="margin-top:12px;color:#ffb8c7;"></div>
-    </div>
-</main>
+                <div class="form-row">
+                    <div>
+                        <label class="sub">Username</label>
+                        <input id="username" class="select" placeholder="Masukan Username" />
+                    </div>
+                    <div>
+                        <label class="sub">Password</label>
+                        <input id="password" type="password" class="select" placeholder="Masukan Password" />
+                    </div>
+                </div>
+                <div class="actions">
+                    <button id="btnLogin" class="btn primary">Login</button>
+                    <!-- <a class="btn ghost" href="index.html">Kembali ke Home</a> -->
+                </div>
+                <div id="msg" style="margin-top:12px;color:#ffb8c7;"></div>
+            </div>
+            <div class="footer">
+                ©Sebastianus Lukito
+            </div>
+        </main>
 
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+        <script type="module">
+            import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+            import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyBKD7JAJHbeZC76XRoJ6lzVVwe0tLGSTno",
-        authDomain: "mktvstmi.firebaseapp.com",
-        projectId: "mktvstmi",
-        storageBucket: "mktvstmi.firebasestorage.app",
-        messagingSenderId: "608278579245",
-        appId: "1:608278579245:web:4320f16e2a637343d110a4",
-        measurementId: "G-0TJKX3M8L2"
-        };
+            const firebaseConfig = {
+                apiKey: "AIzaSyBKD7JAJHbeZC76XRoJ6lzVVwe0tLGSTno",
+                authDomain: "mktvstmi.firebaseapp.com",
+                projectId: "mktvstmi",
+                storageBucket: "mktvstmi.firebasestorage.app",
+                messagingSenderId: "608278579245",
+                appId: "1:608278579245:web:4320f16e2a637343d110a4",
+                measurementId: "G-0TJKX3M8L2"
+                };
 
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
+            // Initialize Firebase
+            const app = initializeApp(firebaseConfig);
 
-    const auth = getAuth(app);
+            const auth = getAuth(app);
 
-    const elU = document.getElementById('username');
-    const elP = document.getElementById('password');
-    const elM = document.getElementById('msg');
+            const elU = document.getElementById('username');
+            const elP = document.getElementById('password');
+            const elM = document.getElementById('msg');
 
-    // Mapping "username" -> email untuk Firebase Auth
-    const toEmail = (username) => `${username}@local.login`;
+            // Mapping "username" -> email untuk Firebase Auth
+            const toEmail = (username) => `${username}@local.login`;
 
-    document.getElementById('btnLogin').addEventListener('click', async () => {
-    elM.textContent = '';
-    const u = elU.value.trim();
-    const p = elP.value;
-    if(!u || !p){ elM.textContent = 'Lengkapi username dan password.'; return; }
-    try{
-        await signInWithEmailAndPassword(auth, toEmail(u), p);
-        location.href = 'admin.html';
-    }catch(err){
-        elM.textContent = 'Login gagal: ' + (err?.message || 'periksa kredensial.');
-    }
-    });
-</script>
-</body>
+            document.getElementById('btnLogin').addEventListener('click', async () => {
+            elM.textContent = '';
+            const u = elU.value.trim();
+            const p = elP.value;
+            if(!u || !p){ elM.textContent = 'Lengkapi username dan password.'; return; }
+            try{
+                await signInWithEmailAndPassword(auth, toEmail(u), p);
+                location.href = 'admin.html';
+            }catch(err){
+                elM.textContent = 'Login gagal: ' + (err?.message || 'periksa kredensial.');
+            }
+            });
+        </script>
+    </body>
 </html>

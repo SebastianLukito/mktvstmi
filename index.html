@@ -1,134 +1,129 @@
 <!doctype html>
 <html lang="id">
-<head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Scoreboard - Marketing IGR vs TMI/GA United</title>
-<link rel="preconnect" href="https://www.gstatic.com" crossorigin>
-<link rel="stylesheet" href="styles.css" />
-<link rel="icon" href="asset/mktlogo.png">
-</head>
-<body>
-<header class="topbar">
-    <div class="topbar-inner">
-    <div class="brand"><span class="dot"></span> Scoreboard Arena</div>
-    <nav>
-        <a class="btn ghost" href="login.html">Login</a>
-    </nav>
-    </div>
-</header>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <title>Scoreboard - Marketing IGR vs TMI/GA United</title>
+        <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="css/styles.css" />
+        <link rel="icon" href="asset/mktlogo.png">
+    </head>
+    <body>
+        <header class="topbar">
+            <div class="topbar-inner">
+                <div class="brand">
+                    <span class="dot"></span> 
+                    MKT IGR vs TMI/GA United
+                </div>
+                <nav>
+                    <a class="btn ghost" href="login.html">Login</a>
+                </nav>
+            </div>
+        </header>
 
-<main class="container">
-    <!-- HERO memakai asset/template.jpg -->
-    <section class="hero">
-    <div class="bg"></div>
+        <main class="container">
+            <!-- HERO memakai asset/template.jpg -->
+            <section class="hero">
+                <div class="bg">
+                </div>
 
-    <!-- <div class="hero-inner">
-        <div class="hero-team">
-        <div class="hero-logo"><img src="asset/mktlogo.png" alt="Marketing IGR"></div>
-        <div>
-            <div class="hero-name">MARKETING IGR</div>
-            <div class="hero-sub">Indogrosir</div>
-        </div>
-        </div>
-        <div class="hero-vs">VS</div>
+                <!-- skor overlay kiri/kanan tepat di atas template -->
+                <div class="hero-score left">
+                    <div id="scoreMkt" class="num">
+                        0
+                    </div>
+                </div>
+                <div class="hero-score right">
+                    <div id="scoreTmi" class="num">
+                        0
+                    </div>
+                </div>
+            </section>
 
-        <div class="hero-team right">
-        <div>
-            <div class="hero-name">TMI / GA UNITED</div>
-            <div class="hero-sub">+GA IDM x IGR</div>
-        </div>
-        <div class="hero-logo"><img src="asset/tmilogo.png" alt="TMI/GA United"></div>
-        </div>
-    </div> -->
+            <!-- TABLE -->
+            <section class="panel">
+                <div style="display:flex;justify-content:space-between; align-items:center;gap:12px;margin-bottom:10px">
+                    <h3 style="letter-spacing:.6px">Rekap Pertandingan</h3>
+                    <span class="badge" id="totalBadge">0 pertandingan</span>
+                </div>
+            <table class="table" id="tableBodyWrap">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Marketing IGR</th>
+                        <th>TMI/GA United</th>
+                        <th>Pemenang</th>
+                        <th>Waktu</th>
+                    </tr>
+                </thead>
+                <tbody id="tbodyMatches">
+                <!-- diisi via JS -->
+                </tbody>
+            </table>
+            </section>
 
-    <!-- skor overlay kiri/kanan tepat di atas template -->
-    <div class="hero-score left"><div id="scoreMkt" class="num">0</div></div>
-    <div class="hero-score right"><div id="scoreTmi" class="num">0</div></div>
-    </section>
+            <div class="footer">
+                ©Sebastianus Lukito
+            </div>
+        </main>
 
-    <!-- TABLE -->
-    <section class="panel">
-    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:10px">
-        <h3 style="letter-spacing:.6px">Rekap Pertandingan</h3>
-        <span class="badge" id="totalBadge">0 pertandingan</span>
-    </div>
-    <table class="table" id="tableBodyWrap">
-        <thead>
-        <tr>
-            <th>#</th>
-            <th>Marketing IGR</th>
-            <th>TMI/GA United</th>
-            <th>Pemenang</th>
-            <th>Waktu</th>
-        </tr>
-        </thead>
-        <tbody id="tbodyMatches">
-        <!-- diisi via JS -->
-        </tbody>
-    </table>
-    </section>
+    <!-- Firebase + App (read-only) -->
+        <script type="module">
+            // === Firebase v9 modular (CDN) ===
+            import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+            import { getFirestore, collection, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
-    <div class="footer">© Scoreboard Arena</div>
-</main>
+            // Konfigurasi project kamu
+            const firebaseConfig = {
+                apiKey: "AIzaSyBKD7JAJHbeZC76XRoJ6lzVVwe0tLGSTno",
+                authDomain: "mktvstmi.firebaseapp.com",
+                projectId: "mktvstmi",
+                storageBucket: "mktvstmi.firebasestorage.app",
+                messagingSenderId: "608278579245",
+                appId: "1:608278579245:web:4320f16e2a637343d110a4",
+                measurementId: "G-0TJKX3M8L2"
+            };
 
-<!-- Firebase + App (read-only) -->
-<script type="module">
-    // === Firebase v9 modular (CDN) ===
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
-    import { getFirestore, collection, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+            // Init
+            const app = initializeApp(firebaseConfig);
+            const db = getFirestore(app);
 
-    // Konfigurasi project kamu
-    const firebaseConfig = {
-    apiKey: "AIzaSyBKD7JAJHbeZC76XRoJ6lzVVwe0tLGSTno",
-    authDomain: "mktvstmi.firebaseapp.com",
-    projectId: "mktvstmi",
-    storageBucket: "mktvstmi.firebasestorage.app",
-    messagingSenderId: "608278579245",
-    appId: "1:608278579245:web:4320f16e2a637343d110a4",
-    measurementId: "G-0TJKX3M8L2"
-    };
+            // Elemen UI
+            const tbody = document.getElementById('tbodyMatches');
+            const badge = document.getElementById('totalBadge');
+            const elM = document.getElementById('scoreMkt');
+            const elT = document.getElementById('scoreTmi');
 
-    // Init
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+            // Stream data: koleksi 'matches' diurutkan terbaru
+            const q = query(collection(db, 'matches'), orderBy('createdAt','desc'));
+            onSnapshot(q, snap => {
+            let rows = [];
+            let mWin = 0, tWin = 0;
+            let i = 0;
 
-    // Elemen UI
-    const tbody = document.getElementById('tbodyMatches');
-    const badge = document.getElementById('totalBadge');
-    const elM = document.getElementById('scoreMkt');
-    const elT = document.getElementById('scoreTmi');
+            snap.forEach(doc => {
+                const d = doc.data(); i++;
+                const winner = d.mkt === 'W' ? 'Marketing IGR' : (d.tmi === 'W' ? 'TMI/GA United' : '-');
+                if (d.mkt === 'W') mWin++;
+                if (d.tmi === 'W') tWin++;
 
-    // Stream data: koleksi 'matches' diurutkan terbaru
-    const q = query(collection(db, 'matches'), orderBy('createdAt','desc'));
-    onSnapshot(q, snap => {
-    let rows = [];
-    let mWin = 0, tWin = 0;
-    let i = 0;
+                const ts = d.createdAt?.toDate?.() ? d.createdAt.toDate() : (d.createdAt || new Date());
+                rows.push(`
+                <tr>
+                    <td>${i}</td>
+                    <td>${d.mkt === 'W' ? '<span class="badge ok">MENANG</span>' : '<span class="badge no">KALAH</span>'}</td>
+                    <td>${d.tmi === 'W' ? '<span class="badge ok">MENANG</span>' : '<span class="badge no">KALAH</span>'}</td>
+                    <td>${winner}</td>
+                    <td>${new Intl.DateTimeFormat('id-ID',{dateStyle:'medium', timeStyle:'short'}).format(ts)}</td>
+                </tr>
+                `);
+            });
 
-    snap.forEach(doc => {
-        const d = doc.data(); i++;
-        const winner = d.mkt === 'W' ? 'Marketing IGR' : (d.tmi === 'W' ? 'TMI/GA United' : '-');
-        if (d.mkt === 'W') mWin++;
-        if (d.tmi === 'W') tWin++;
-
-        const ts = d.createdAt?.toDate?.() ? d.createdAt.toDate() : (d.createdAt || new Date());
-        rows.push(`
-        <tr>
-            <td>${i}</td>
-            <td>${d.mkt === 'W' ? '<span class="badge ok">MENANG</span>' : '<span class="badge no">KALAH</span>'}</td>
-            <td>${d.tmi === 'W' ? '<span class="badge ok">MENANG</span>' : '<span class="badge no">KALAH</span>'}</td>
-            <td>${winner}</td>
-            <td>${new Intl.DateTimeFormat('id-ID',{dateStyle:'medium', timeStyle:'short'}).format(ts)}</td>
-        </tr>
-        `);
-    });
-
-    tbody.innerHTML = rows.join('') || `<tr><td colspan="5" style="color:#86a2d2;padding:16px">Belum ada data.</td></tr>`;
-    badge.textContent = `${i} pertandingan`;
-    elM.textContent = mWin;
-    elT.textContent = tWin;
-    });
-</script>
-</body>
+            tbody.innerHTML = rows.join('') || `<tr><td colspan="5" style="color:#86a2d2;padding:16px">Belum ada data.</td></tr>`;
+            badge.textContent = `${i} pertandingan`;
+            elM.textContent = mWin;
+            elT.textContent = tWin;
+            });
+        </script>
+    </body>
 </html>

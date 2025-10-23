@@ -1,185 +1,203 @@
 <!doctype html>
 <html lang="id">
-<head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Input Statistik - Admin</title>
-<link rel="stylesheet" href="styles.css"/>
-</head>
-<body>
-<header class="topbar">
-    <div class="topbar-inner">
-    <div class="brand"><span class="dot"></span> Scoreboard Arena</div>
-    <nav style="display:flex;gap:10px">
-        <a class="btn ghost" href="index.html">Home</a>
-        <button id="btnLogout" class="btn">Logout</button>
-    </nav>
-    </div>
-</header>
-
-<main class="container">
-    <section class="card">
-    <h2 style="margin-bottom:12px">Input Statistik Pertandingan</h2>
-    <div class="sub" style="margin-bottom:18px">Tentukan hasil: <b>MENANG/KALAH</b> untuk masing-masing tim (otomatis saling melengkapi).</div>
-
-    <div class="form-row">
-        <!-- Left / MKT -->
-        <div class="panel">
-        <div class="team-box">
-            <div class="team-logo"><img src="asset/mktlogo.png" alt="Marketing IGR"/></div>
-            <div>
-            <div class="team-name">MARKETING IGR</div>
-            <div class="sub">Indogrosir</div>
+    <head>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width,initial-scale=1"/>
+        <title>Input Statistik - Admin</title>
+        <link rel="stylesheet" href="css/styles.css"/>
+        <link rel="icon" href="asset/mktlogo.png">
+    </head>
+    <body>
+        <header class="topbar">
+            <div class="topbar-inner">
+                <div class="brand">
+                    <span class="dot"></span> 
+                    MKT IGR vs TMI/GA United
+                </div>
+                <nav style="display:flex;gap:10px">
+                    <a class="btn ghost" href="index.html">Home</a>
+                    <button id="btnLogout" class="btn">Logout</button>
+                </nav>
             </div>
-        </div>
-        <div style="margin-top:14px">
-            <select id="mktSelect" class="select">
-            <option value="W">MENANG</option>
-            <option value="L">KALAH</option>
-            </select>
-        </div>
-        </div>
+        </header>
 
-        <!-- Right / TMI -->
-        <div class="panel">
-        <div class="team-box right">
-            <div class="team-logo"><img src="asset/tmilogo.png" alt="TMI/GA United"/></div>
-            <div style="text-align:right">
-            <div class="team-name">TMI / GA UNITED</div>
-            <div class="sub">+GA IDM x IGR</div>
-            </div>
-        </div>
-        <div style="margin-top:14px">
-            <select id="tmiSelect" class="select">
-            <option value="L">KALAH</option>
-            <option value="W">MENANG</option>
-            </select>
-        </div>
-        </div>
-    </div>
+        <main class="container">
+            <section class="card">
+                <h2 style="margin-bottom:12px">Input Statistik Pertandingan</h2>
+                <div class="sub" style="margin-bottom:18px">
+                    Tentukan hasil: <b>MENANG/KALAH</b> untuk masing-masing tim (otomatis saling melengkapi).
+                </div>
 
-    <div class="actions">
-        <button id="btnSave" class="btn primary">Simpan Rekam</button>
-        <span id="info" class="sub" style="align-self:center"></span>
-    </div>
-    </section>
+                <div class="form-row">
+                    <!-- Left / MKT -->
+                    <div class="panel">
+                        <div class="team-box">
+                            <div class="team-logo">
+                                <img src="asset/mktlogo.png" alt="Marketing IGR"/>
+                            </div>
+                            <div>
+                                <div class="team-name">
+                                    MARKETING IGR
+                                </div>
+                                <div class="sub">
+                                    Indogrosir
+                                </div>
+                            </div>
+                        </div>
+                        <div style="margin-top:14px">
+                            <select id="mktSelect" class="select">
+                                <option value="W">MENANG</option>
+                                <option value="L">KALAH</option>
+                            </select>
+                        </div>
+                    </div>
 
-    <section class="panel">
-    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:8px">
-        <h3 style="letter-spacing:.6px">Riwayat Statistik (Admin)</h3>
-        <span class="badge" id="adminTotal">0</span>
-    </div>
-    <table class="table">
-        <thead>
-        <tr>
-            <th>#</th>
-            <th>Marketing IGR</th>
-            <th>TMI/GA United</th>
-            <th>Pemenang</th>
-            <th>Waktu</th>
-            <th>Aksi</th>
-        </tr>
-        </thead>
-        <tbody id="adminTbody"></tbody>
-    </table>
-    </section>
+                    <!-- Right / TMI -->
+                    <div class="panel">
+                        <div class="team-box right">
+                            <div class="team-logo">
+                                <img src="asset/tmilogo.png" alt="TMI/GA United"/>
+                            </div>
+                            <div style="text-align:right">
+                                <div class="team-name">
+                                    TMI / GA UNITED
+                                </div>
+                                <div class="sub">
+                                    +GA IDM x IGR
+                                </div>
+                            </div>
+                        </div>
+                        <div style="margin-top:14px">
+                            <select id="tmiSelect" class="select">
+                                <option value="L">KALAH</option>
+                                <option value="W">MENANG</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
 
-    <div class="footer">Hanya admin yang dapat mengubah data. Semua perubahan tercatat realtime.</div>
-</main>
+                <div class="actions">
+                    <button id="btnSave" class="btn primary">Simpan Rekam</button>
+                    <span id="info" class="sub" style="align-self:center"></span>
+                </div>
+            </section>
 
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
-    import { getFirestore, collection, addDoc, serverTimestamp, onSnapshot, orderBy, query, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+            <section class="panel">
+                <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:8px">
+                    <h3 style="letter-spacing:.6px">Riwayat Statistik (Admin)</h3>
+                    <span class="badge" id="adminTotal">0</span>
+                </div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Marketing IGR</th>
+                            <th>TMI/GA United</th>
+                            <th>Pemenang</th>
+                            <th>Waktu</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminTbody"></tbody>
+                </table>
+            </section>
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyBKD7JAJHbeZC76XRoJ6lzVVwe0tLGSTno",
-        authDomain: "mktvstmi.firebaseapp.com",
-        projectId: "mktvstmi",
-        storageBucket: "mktvstmi.firebasestorage.app",
-        messagingSenderId: "608278579245",
-        appId: "1:608278579245:web:4320f16e2a637343d110a4",
-        measurementId: "G-0TJKX3M8L2"
-        };
+            <div class="footer">Hanya admin yang dapat mengubah data. Semua perubahan tercatat realtime.</div>
+        </main>
 
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
+        <script type="module">
+            import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+            import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+            import { getFirestore, collection, addDoc, serverTimestamp, onSnapshot, orderBy, query, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+            const firebaseConfig = {
+                apiKey: "AIzaSyBKD7JAJHbeZC76XRoJ6lzVVwe0tLGSTno",
+                authDomain: "mktvstmi.firebaseapp.com",
+                projectId: "mktvstmi",
+                storageBucket: "mktvstmi.firebasestorage.app",
+                messagingSenderId: "608278579245",
+                appId: "1:608278579245:web:4320f16e2a637343d110a4",
+                measurementId: "G-0TJKX3M8L2"
+                };
 
-    const elM = document.getElementById('mktSelect');
-    const elT = document.getElementById('tmiSelect');
-    const info = document.getElementById('info');
-    const tbody = document.getElementById('adminTbody');
-    const total = document.getElementById('adminTotal');
+            // Initialize Firebase
+            const app = initializeApp(firebaseConfig);
 
-    // Mutual select: jika MKT menang -> TMI kalah, dan sebaliknya
-    const syncSelect = () => {
-    if (document.activeElement === elM) {
-        elT.value = (elM.value === 'W') ? 'L' : 'W';
-    } else if (document.activeElement === elT) {
-        elM.value = (elT.value === 'W') ? 'L' : 'W';
-    }
-    };
-    elM.addEventListener('change', syncSelect);
-    elT.addEventListener('change', syncSelect);
+            const auth = getAuth(app);
+            const db = getFirestore(app);
 
-    // Guard: hanya user login yang boleh melihat halaman
-    onAuthStateChanged(auth, user => {
-    if(!user){ location.href = 'login.html'; return; }
-    // load table
-    const q = query(collection(db,'matches'), orderBy('createdAt','desc'));
-    onSnapshot(q, snap => {
-        let i = 0; const rows = [];
-        snap.forEach(d => {
-        i++; const data = d.data(); 
-        const winner = data.mkt==='W' ? 'Marketing IGR' : (data.tmi==='W' ? 'TMI/GA United' : '-');
-        const ts = data.createdAt?.toDate?.() ? data.createdAt.toDate() : (data.createdAt || new Date());
-        rows.push(`
-            <tr>
-            <td>${i}</td>
-            <td>${data.mkt === 'W' ? '<span class="badge ok">MENANG</span>' : '<span class="badge no">KALAH</span>'}</td>
-            <td>${data.tmi === 'W' ? '<span class="badge ok">MENANG</span>' : '<span class="badge no">KALAH</span>'}</td>
-            <td>${winner}</td>
-            <td>${new Intl.DateTimeFormat('id-ID',{dateStyle:'medium', timeStyle:'short'}).format(ts)}</td>
-            <td><button class="btn danger" data-id="${d.id}">Delete</button></td>
-            </tr>
-        `);
-        });
-        tbody.innerHTML = rows.join('') || `<tr><td colspan="6" style="color:#86a2d2;padding:16px">Belum ada data.</td></tr>`;
-        total.textContent = i;
+            const elM = document.getElementById('mktSelect');
+            const elT = document.getElementById('tmiSelect');
+            const info = document.getElementById('info');
+            const tbody = document.getElementById('adminTbody');
+            const total = document.getElementById('adminTotal');
 
-        // Attach delete handlers
-        [...tbody.querySelectorAll('button[data-id]')].forEach(b=>{
-        b.onclick = async () => {
-            if(confirm('Hapus record ini?')){
-            await deleteDoc(doc(db,'matches', b.dataset.id));
+            // Mutual select: jika MKT menang -> TMI kalah, dan sebaliknya
+            const syncSelect = () => {
+            if (document.activeElement === elM) {
+                elT.value = (elM.value === 'W') ? 'L' : 'W';
+            } else if (document.activeElement === elT) {
+                elM.value = (elT.value === 'W') ? 'L' : 'W';
             }
-        }
-        });
-    });
-    });
+            };
+            elM.addEventListener('change', syncSelect);
+            elT.addEventListener('change', syncSelect);
 
-    document.getElementById('btnSave').addEventListener('click', async () => {
-    info.textContent = '';
-    const user = auth.currentUser;
-    if(!user){ alert('Sesi berakhir, silakan login kembali.'); location.href='login.html'; return; }
-    const m = elM.value; const t = elT.value;
-    if(m === t){ info.textContent = 'Hasil harus berbeda (satu menang, satu kalah).'; return; }
-    try{
-        await addDoc(collection(db,'matches'), {
-        mkt: m, tmi: t, createdBy: user.uid, createdAt: serverTimestamp()
-        });
-        info.style.color = '#a7ffd7'; info.textContent = 'Tersimpan.';
-    }catch(e){
-        info.style.color = '#ffd6de'; info.textContent = 'Gagal menyimpan: '+(e?.message||'');
-    }
-    });
+            // Guard: hanya user login yang boleh melihat halaman
+            onAuthStateChanged(auth, user => {
+            if(!user){ location.href = 'login.html'; return; }
+            // load table
+            const q = query(collection(db,'matches'), orderBy('createdAt','desc'));
+            onSnapshot(q, snap => {
+                let i = 0; const rows = [];
+                snap.forEach(d => {
+                i++; const data = d.data(); 
+                const winner = data.mkt==='W' ? 'Marketing IGR' : (data.tmi==='W' ? 'TMI/GA United' : '-');
+                const ts = data.createdAt?.toDate?.() ? data.createdAt.toDate() : (data.createdAt || new Date());
+                rows.push(`
+                    <tr>
+                    <td>${i}</td>
+                    <td>${data.mkt === 'W' ? '<span class="badge ok">MENANG</span>' : '<span class="badge no">KALAH</span>'}</td>
+                    <td>${data.tmi === 'W' ? '<span class="badge ok">MENANG</span>' : '<span class="badge no">KALAH</span>'}</td>
+                    <td>${winner}</td>
+                    <td>${new Intl.DateTimeFormat('id-ID',{dateStyle:'medium', timeStyle:'short'}).format(ts)}</td>
+                    <td><button class="btn danger" data-id="${d.id}">Delete</button></td>
+                    </tr>
+                `);
+                });
+                tbody.innerHTML = rows.join('') || `<tr><td colspan="6" style="color:#86a2d2;padding:16px">Belum ada data.</td></tr>`;
+                total.textContent = i;
 
-    document.getElementById('btnLogout').addEventListener('click', async () => {
-    await signOut(auth); location.href = 'index.html';
-    });
-</script>
-</body>
+                // Attach delete handlers
+                [...tbody.querySelectorAll('button[data-id]')].forEach(b=>{
+                b.onclick = async () => {
+                    if(confirm('Hapus record ini?')){
+                    await deleteDoc(doc(db,'matches', b.dataset.id));
+                    }
+                }
+                });
+            });
+            });
+
+            document.getElementById('btnSave').addEventListener('click', async () => {
+            info.textContent = '';
+            const user = auth.currentUser;
+            if(!user){ alert('Sesi berakhir, silakan login kembali.'); location.href='login.html'; return; }
+            const m = elM.value; const t = elT.value;
+            if(m === t){ info.textContent = 'Hasil harus berbeda (satu menang, satu kalah).'; return; }
+            try{
+                await addDoc(collection(db,'matches'), {
+                mkt: m, tmi: t, createdBy: user.uid, createdAt: serverTimestamp()
+                });
+                info.style.color = '#a7ffd7'; info.textContent = 'Tersimpan.';
+            }catch(e){
+                info.style.color = '#ffd6de'; info.textContent = 'Gagal menyimpan: '+(e?.message||'');
+            }
+            });
+
+            document.getElementById('btnLogout').addEventListener('click', async () => {
+            await signOut(auth); location.href = 'index.html';
+            });
+        </script>
+    </body>
 </html>
