@@ -189,12 +189,12 @@ main.container{ flex:1 0 auto; }
         padding-block: 10px;
     }
     .hero-score{
-        width: clamp(50px, 23vw, 60px);
-        height: clamp(14px, 27vw, 64px);
+        width: clamp(40px, 23vw, 20px);
+        height: clamp(14px, 27vw, 44px);
     }
     .hero-score.left{  left:31%; }
     .hero-score.right{ right:31%; }
-    .hero-score .num{ font-size: clamp(42px, 2.5vw, 72px); }
+    .hero-score .num{ font-size: clamp(25px, 2.5vw, 72px); }
     .footer {
         font-size:52px;
     }

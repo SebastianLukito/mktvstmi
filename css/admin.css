@@ -1,0 +1,111 @@
+/* =======================
+   ADMIN PAGE STYLES
+   ======================= */
+
+/* --- Layout dua kolom untuk area input --- */
+.card .form-row{
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* bersebelahan */
+  gap: 18px;
+  align-items: stretch;
+  margin: 18px 0;
+}
+
+/* Panel input (tetap pakai .panel bawaan, tapi diperkaya sedikit) */
+.card .form-row > .panel{
+  background: linear-gradient(180deg, rgba(18,26,52,.8), rgba(12,17,36,.7));
+  border: 1px solid rgba(64,255,217,.18);
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 16px 38px rgba(0,0,0,.35), inset 0 0 40px rgba(59,227,255,.05);
+}
+
+/* --- Header tim di dalam panel --- */
+.team-box{
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.team-box.right{
+  flex-direction: row-reverse;       /* logo di kanan untuk TMI */
+  text-align: right;
+}
+
+/* Logo bundar dengan ring neon */
+.team-logo{
+  width: 72px; height: 72px;
+  border-radius: 50%;
+  display: grid; place-items: center;
+  background: radial-gradient(120% 120% at 30% 30%, rgba(64,255,217,.18), rgba(12,17,36,.6));
+  border: 1px solid rgba(64,255,217,.25);
+  box-shadow: 0 6px 20px rgba(59,227,255,.12), inset 0 0 24px rgba(64,255,217,.08);
+}
+.team-logo img{
+  width: 78%; height: 78%; object-fit: contain; filter: drop-shadow(0 2px 8px rgba(0,0,0,.25));
+}
+
+/* Nama tim */
+.team-name{
+  font-weight: 900;
+  letter-spacing: .6px;
+  background: linear-gradient(180deg,#fff,#c9f9ff 55%,#7bfbe0);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 18px rgba(59,227,255,.25);
+  margin-bottom: 2px;
+}
+.sub{ color: var(--muted); font-size: 12.5px }
+
+/* --- Select MENANG/KALAH --- */
+.select{
+  width: 100%;
+  margin-top: 12px;            /* override inline spacing jika perlu */
+  padding: 12px 14px;
+  background: linear-gradient(180deg, rgba(12,17,36,.65), rgba(12,17,36,.5));
+  border: 1px solid rgba(157,179,217,.22);
+  border-radius: 14px;
+  color: #e5f2ff; font-size: 14px;
+  outline: none;
+  transition: border-color .2s, box-shadow .2s, transform .06s;
+}
+.select:focus{
+  border-color: rgba(64,255,217,.5);
+  box-shadow: 0 0 0 3px rgba(64,255,217,.18), 0 10px 24px rgba(59,227,255,.12);
+  transform: translateY(-1px);
+}
+
+/* --- Tombol bar actions --- */
+.actions{
+  display: flex;
+  gap: 12px;
+  margin-top: 14px;
+}
+.actions .btn.primary{
+  padding: 12px 18px; border-radius: 16px;
+  box-shadow: 0 10px 22px rgba(64,255,217,.18), inset 0 1px 0 rgba(255,255,255,.05);
+}
+.actions .btn.primary:active{ transform: translateY(0) scale(.98) }
+
+/* --- Tabel riwayat admin --- */
+.panel .table{
+  min-width: 760px;            /* sedikit lebih lega untuk kolom Aksi */
+}
+.panel .table thead th{
+  text-transform: none;
+}
+.panel .table tbody tr td:last-child{
+  white-space: nowrap;         /* tombol Delete tidak wrap */
+}
+
+/* --- Responsif --- */
+@media (max-width: 860px){
+  .card .form-row{
+    grid-template-columns: 1fr; /* stack di HP */
+  }
+  .team-logo{ width: 64px; height: 64px }
+}
+@media (max-width: 420px){
+  .team-logo{ width: 56px; height: 56px }
+  .actions{ flex-direction: column }
+  .actions .btn{ width: 100% }
+}
