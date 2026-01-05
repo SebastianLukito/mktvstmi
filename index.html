@@ -1,127 +1,278 @@
 <!doctype html>
 <html lang="id">
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width,initial-scale=1" />
-        <title>Scoreboard - Marketing IGR vs TMI/GA United</title>
-        <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="css/styles.css" />
-        <link rel="icon" href="asset/mktlogo.png">
-    </head>
-    <body>
-        <header class="topbar">
-            <div class="topbar-inner">
-                <div class="brand">
-                    <span class="dot"></span> 
-                    MKT IGR vs TMI/GA United
-                </div>
-                <nav>
-                    <a class="btn ghost" href="login.html">Login</a>
-                </nav>
-            </div>
-        </header>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Scoreboard - Marketing IGR vs TMI/GA United</title>
+    <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="css/styles.css" />
+    <link rel="icon" href="asset/mktlogo.png">
 
-        <main class="container">
-            <section class="hero">
-                <div class="bg">
-                </div>
+    <!-- Tools styling (self-contained, biar tetap rapi walau CSS belum diubah) -->
+    <style>
+    .table-tools{
+        display:flex; flex-wrap:wrap; gap:10px;
+        align-items:center; justify-content:space-between;
+        margin:8px 0 6px;
+    }
+    .filters{ display:flex; flex-wrap:wrap; gap:8px; }
+    .btn.chip{
+        padding:8px 12px; border-radius:999px; font-size:12px;
+    }
+    .btn.chip.active{
+        background:linear-gradient(90deg, rgba(64,255,217,.22), rgba(59,227,255,.18));
+        border-color:rgba(64,255,217,.55);
+        color:#dff7ff;
+    }
+    .search-wrap{
+        display:flex; gap:8px; align-items:center;
+        flex:1 1 320px; min-width:220px;
+    }
+    .input{
+        width:100%;
+        padding:10px 12px;
+        border-radius:14px;
+        border:1px solid rgba(157,179,217,.22);
+        background:linear-gradient(180deg, rgba(12,17,36,.65), rgba(12,17,36,.5));
+        color:#e5f2ff;
+        outline:none;
+    }
+    .input:focus{
+        border-color: rgba(64,255,217,.5);
+        box-shadow: 0 0 0 3px rgba(64,255,217,.18);
+    }
+    @media (max-width:600px){
+        .table-tools{ flex-direction:column; align-items:stretch; }
+        .search-wrap{ flex:1 1 auto; min-width:0; }
+        .filters .btn{ flex:1 1 auto; }
+    }
+    </style>
+</head>
 
-                <div class="hero-score left">
-                    <div id="scoreMkt" class="num">
-                        0
-                    </div>
-                </div>
-                <div class="hero-score right">
-                    <div id="scoreTmi" class="num">
-                        0
-                    </div>
-                </div>
-            </section>
+<body>
+    <header class="topbar">
+    <div class="topbar-inner">
+        <div class="brand">
+        <span class="dot"></span>
+        MKT IGR vs TMI/GA United
+        </div>
+        <nav>
+        <a class="btn ghost" href="login.html">Login</a>
+        </nav>
+    </div>
+    </header>
 
-            <!-- TABLE -->
-            <section class="panel">
-                <div style="display:flex;justify-content:space-between; align-items:center;gap:12px;margin-bottom:10px">
-                    <h3 style="letter-spacing:.6px">Rekap Pertandingan</h3>
-                    <span class="badge" id="totalBadge">0 pertandingan</span>
-                </div>
-            <table class="table" id="tableBodyWrap">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Marketing IGR</th>
-                        <th>TMI/GA United</th>
-                        <th>Pemenang</th>
-                        <th>Waktu</th>
-                    </tr>
-                </thead>
-                <tbody id="tbodyMatches">
-                <!-- diisi via JS -->
-                </tbody>
-            </table>
-            </section>
+    <main class="container">
+    <section class="hero">
+        <div class="bg"></div>
 
-            <div class="footer">
-                ©WKWKWK
-            </div>
-        </main>
+        <div class="hero-score left">
+        <div id="scoreMkt" class="num">0</div>
+        </div>
+        <div class="hero-score right">
+        <div id="scoreTmi" class="num">0</div>
+        </div>
+    </section>
+
+    <!-- TABLE -->
+    <section class="panel">
+        <div style="display:flex;justify-content:space-between; align-items:center;gap:12px;margin-bottom:10px">
+        <h3 style="letter-spacing:.6px">Rekap Pertandingan</h3>
+        <span class="badge" id="totalBadge">0 pertandingan</span>
+        </div>
+
+        <!-- TOOLS: Filter & Search -->
+        <div class="table-tools">
+        <div class="filters" id="publicFilters">
+            <button class="btn ghost chip active" data-range="all">Semua</button>
+            <button class="btn ghost chip" data-range="today">Hari ini</button>
+            <button class="btn ghost chip" data-range="week">Minggu ini</button>
+            <button class="btn ghost chip" data-range="month">Bulan ini</button>
+        </div>
+
+        <div class="search-wrap">
+            <input id="publicSearch" class="input" placeholder="Cari… (contoh: Marketing menang)" />
+            <button id="publicClear" class="btn ghost chip">Reset</button>
+        </div>
+        </div>
+
+        <table class="table" id="tableBodyWrap">
+        <thead>
+            <tr>
+            <th>#</th>
+            <th>Marketing IGR</th>
+            <th>TMI/GA United</th>
+            <th>Pemenang</th>
+            <th>Waktu</th>
+            </tr>
+        </thead>
+        <tbody id="tbodyMatches">
+            <!-- diisi via JS -->
+        </tbody>
+        </table>
+    </section>
+
+    <div class="footer">
+        ©WKWKWK
+    </div>
+    </main>
 
     <!-- Firebase + App (read-only) -->
-        <script type="module">
-            // === Firebase v9 modular (CDN) ===
-            import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
-            import { getFirestore, collection, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+    <script type="module">
+    // === Firebase v9 modular (CDN) ===
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+    import { getFirestore, collection, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
-            // Konfigurasi project kamu
-            const firebaseConfig = {
-                apiKey: "AIzaSyBKD7JAJHbeZC76XRoJ6lzVVwe0tLGSTno",
-                authDomain: "mktvstmi.firebaseapp.com",
-                projectId: "mktvstmi",
-                storageBucket: "mktvstmi.firebasestorage.app",
-                messagingSenderId: "608278579245",
-                appId: "1:608278579245:web:4320f16e2a637343d110a4",
-                measurementId: "G-0TJKX3M8L2"
-            };
+    // Konfigurasi project kamu
+    const firebaseConfig = {
+        apiKey: "AIzaSyBKD7JAJHbeZC76XRoJ6lzVVwe0tLGSTno",
+        authDomain: "mktvstmi.firebaseapp.com",
+        projectId: "mktvstmi",
+        storageBucket: "mktvstmi.firebasestorage.app",
+        messagingSenderId: "608278579245",
+        appId: "1:608278579245:web:4320f16e2a637343d110a4",
+        measurementId: "G-0TJKX3M8L2"
+    };
 
-            // Init
-            const app = initializeApp(firebaseConfig);
-            const db = getFirestore(app);
+    // Init
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-            // Elemen UI
-            const tbody = document.getElementById('tbodyMatches');
-            const badge = document.getElementById('totalBadge');
-            const elM = document.getElementById('scoreMkt');
-            const elT = document.getElementById('scoreTmi');
+    // Elemen UI
+    const tbody = document.getElementById('tbodyMatches');
+    const badge = document.getElementById('totalBadge');
+    const elM = document.getElementById('scoreMkt');
+    const elT = document.getElementById('scoreTmi');
 
-            // Stream data: koleksi 'matches' diurutkan terbaru
-            const q = query(collection(db, 'matches'), orderBy('createdAt','desc'));
-            onSnapshot(q, snap => {
-            let rows = [];
-            let mWin = 0, tWin = 0;
-            let i = 0;
+    // Filter/Search UI
+    const filterWrap = document.getElementById('publicFilters');
+    const filterBtns = [...filterWrap.querySelectorAll('button[data-range]')];
+    const searchEl = document.getElementById('publicSearch');
+    const clearBtn = document.getElementById('publicClear');
 
-            snap.forEach(doc => {
-                const d = doc.data(); i++;
-                const winner = d.mkt === 'W' ? 'Marketing IGR' : (d.tmi === 'W' ? 'TMI/GA United' : '-');
-                if (d.mkt === 'W') mWin++;
-                if (d.tmi === 'W') tWin++;
+    // State
+    let allMatches = [];
+    let activeRange = 'all';
+    let searchTerm = '';
+    let currentView = [];
 
-                const ts = d.createdAt?.toDate?.() ? d.createdAt.toDate() : (d.createdAt || new Date());
-                rows.push(`
-                <tr>
-                    <td>${i}</td>
-                    <td>${d.mkt === 'W' ? '<span class="badge ok">MENANG</span>' : '<span class="badge no">KALAH</span>'}</td>
-                    <td>${d.tmi === 'W' ? '<span class="badge ok">MENANG</span>' : '<span class="badge no">KALAH</span>'}</td>
-                    <td>${winner}</td>
-                    <td>${new Intl.DateTimeFormat('id-ID',{dateStyle:'medium', timeStyle:'short'}).format(ts)}</td>
-                </tr>
-                `);
-            });
+    const fmt = new Intl.DateTimeFormat('id-ID', { dateStyle: 'medium', timeStyle: 'short' });
 
-            tbody.innerHTML = rows.join('') || `<tr><td colspan="5" style="color:#86a2d2;padding:16px">Belum ada data.</td></tr>`;
-            badge.textContent = `${i} pertandingan`;
-            elM.textContent = mWin;
-            elT.textContent = tWin;
-            });
-        </script>
-    </body>
+    const toDateSafe = (createdAt) => {
+        if (createdAt?.toDate?.()) return createdAt.toDate();
+        if (createdAt instanceof Date) return createdAt;
+        const d = new Date(createdAt);
+        return isNaN(d.getTime()) ? new Date() : d;
+    };
+
+    const startOfToday = () => {
+        const d = new Date(); d.setHours(0, 0, 0, 0); return d;
+    };
+    const startOfWeek = () => {
+        const d = startOfToday();
+        const day = (d.getDay() + 6) % 7; // Monday=0
+        d.setDate(d.getDate() - day);
+        return d;
+    };
+    const startOfMonth = () => {
+        const d = startOfToday(); d.setDate(1); return d;
+    };
+
+    const makeSearchText = (m) => {
+        const marketing = m.mkt === 'W' ? 'marketing menang' : 'marketing kalah';
+        const tmi = m.tmi === 'W' ? 'tmi menang' : 'tmi kalah';
+        return `${m.winner} ${marketing} ${tmi} ${m.timeText}`.toLowerCase();
+    };
+
+    const renderTable = (list) => {
+        if (!list.length) {
+        tbody.innerHTML = `<tr><td colspan="5" style="color:#86a2d2;padding:16px">Tidak ada data untuk filter/pencarian ini.</td></tr>`;
+        return;
+        }
+
+        const rows = list.map((m, idx) => `
+        <tr>
+            <td>${idx + 1}</td>
+            <td>${m.mkt === 'W' ? '<span class="badge ok">MENANG</span>' : '<span class="badge no">KALAH</span>'}</td>
+            <td>${m.tmi === 'W' ? '<span class="badge ok">MENANG</span>' : '<span class="badge no">KALAH</span>'}</td>
+            <td>${m.winner}</td>
+            <td>${m.timeText}</td>
+        </tr>
+        `);
+
+        tbody.innerHTML = rows.join('');
+    };
+
+    const applyFilters = () => {
+        const term = searchTerm.trim().toLowerCase();
+        let list = allMatches.slice();
+
+        let boundary = null;
+        if (activeRange === 'today') boundary = startOfToday();
+        if (activeRange === 'week') boundary = startOfWeek();
+        if (activeRange === 'month') boundary = startOfMonth();
+        if (boundary) list = list.filter(m => m.ts >= boundary);
+
+        if (term) list = list.filter(m => m.search.includes(term));
+
+        currentView = list;
+        renderTable(list);
+        badge.textContent = `${list.length} ditampilkan · ${allMatches.length} total`;
+    };
+
+    // UI events
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+        activeRange = btn.dataset.range;
+        filterBtns.forEach(b => b.classList.toggle('active', b === btn));
+        applyFilters();
+        });
+    });
+
+    searchEl.addEventListener('input', (e) => {
+        searchTerm = e.target.value || '';
+        applyFilters();
+    });
+
+    clearBtn.addEventListener('click', () => {
+        searchTerm = '';
+        searchEl.value = '';
+        activeRange = 'all';
+        filterBtns.forEach(b => b.classList.toggle('active', b.dataset.range === 'all'));
+        applyFilters();
+    });
+
+    // Stream data: koleksi 'matches' diurutkan terbaru
+    const q = query(collection(db, 'matches'), orderBy('createdAt','desc'));
+    onSnapshot(q, snap => {
+        allMatches = [];
+        let mWin = 0, tWin = 0;
+
+        snap.forEach(docSnap => {
+        const d = docSnap.data();
+
+        if (d.mkt === 'W') mWin++;
+        if (d.tmi === 'W') tWin++;
+
+        const winner = d.mkt === 'W'
+            ? 'Marketing IGR'
+            : (d.tmi === 'W' ? 'TMI/GA United' : '-');
+
+        const ts = toDateSafe(d.createdAt);
+        const timeText = fmt.format(ts);
+
+        const m = { id: docSnap.id, mkt: d.mkt, tmi: d.tmi, winner, ts, timeText };
+        m.search = makeSearchText(m);
+
+        allMatches.push(m);
+        });
+
+        // skor total (bukan hasil filter)
+        elM.textContent = mWin;
+        elT.textContent = tWin;
+
+        applyFilters();
+    });
+    </script>
+</body>
 </html>

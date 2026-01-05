@@ -294,30 +294,88 @@ main.container{ flex:1 0 auto; }
 
 /* ---------- FOOTER ---------- */
 .footer{
-  margin-top:20px;
-  padding:14px 0;
-  color:var(--muted);
-  font-size:12px;
-  letter-spacing:.3px;
-  text-align:center;
+margin-top:20px;
+padding:14px 0;
+color:var(--muted);
+font-size:12px;
+letter-spacing:.3px;
+text-align:center;
 
-  border-top:1px solid rgba(157,179,217,.14);
-  background:linear-gradient(180deg, rgba(12,17,36,.35), rgba(12,17,36,.15));
-  box-shadow:0 -8px 24px rgba(0,0,0,.25) inset;
-  border-radius:0 0 14px 14px; /* menyatu manis dengan panel di atas */
+border-top:1px solid rgba(157,179,217,.14);
+background:linear-gradient(180deg, rgba(12,17,36,.35), rgba(12,17,36,.15));
+box-shadow:0 -8px 24px rgba(0,0,0,.25) inset;
+border-radius:0 0 14px 14px; /* menyatu manis dengan panel di atas */
 }
 
 .footer a{
-  color:#dff7ff;
-  text-decoration:none;
-  border-bottom:1px dotted rgba(223,247,255,.35);
+color:#dff7ff;
+text-decoration:none;
+border-bottom:1px dotted rgba(223,247,255,.35);
 }
 .footer a:hover{ border-bottom-color: rgba(223,247,255,.75); }
 
 /* Mobile */
 @media (max-width:600px){
-  .footer{
+.footer{
     font-size:15px;
     padding:12px 0;
-  }
+}
+}
+
+/* ===== Rekap tools (filter/search/export) ===== */
+.table-tools{
+display:flex;
+flex-wrap:wrap;
+gap:10px;
+align-items:center;
+justify-content:space-between;
+margin:8px 0 6px;
+}
+
+.filters{
+display:flex;
+flex-wrap:wrap;
+gap:8px;
+}
+
+.btn.chip{
+padding:8px 12px;
+border-radius:999px;
+font-size:12px;
+}
+
+.btn.chip.active{
+background:linear-gradient(90deg, rgba(64,255,217,.22), rgba(59,227,255,.18));
+border-color:rgba(64,255,217,.55);
+color:#dff7ff;
+}
+
+.search-wrap{
+display:flex;
+gap:8px;
+align-items:center;
+flex:1 1 320px;
+min-width:220px;
+}
+
+.input{
+width:100%;
+padding:10px 12px;
+border-radius:14px;
+border:1px solid rgba(157,179,217,.22);
+background:linear-gradient(180deg, rgba(12,17,36,.65), rgba(12,17,36,.5));
+color:#e5f2ff;
+outline:none;
+}
+
+.input:focus{
+border-color: rgba(64,255,217,.5);
+box-shadow: 0 0 0 3px rgba(64,255,217,.18);
+}
+
+/* Mobile: semua jadi full-width, enak ditekan */
+@media (max-width:600px){
+.table-tools{ flex-direction:column; align-items:stretch; }
+.search-wrap{ flex:1 1 auto; min-width:0; }
+.filters .btn{ flex:1 1 auto; }
 }
