@@ -57,6 +57,7 @@
         </div>
 
         <button id="btnExportCsv" class="btn primary">Export CSV</button>
+        <button id="btnDeleteAll" class="btn danger">🗑️ Hapus Semua</button>
         </div>
 
         <table class="table">
@@ -73,6 +74,15 @@
         </thead>
         <tbody id="adminTbody"></tbody>
         </table>
+
+        <!-- Pagination -->
+        <div class="pagination" id="adminPagination">
+            <button class="page-btn" id="adminPageFirst">⟪ First</button>
+            <button class="page-btn" id="adminPagePrev">‹ Prev</button>
+            <span class="page-info" id="adminPageInfo">1 / 1</span>
+            <button class="page-btn" id="adminPageNext">Next ›</button>
+            <button class="page-btn" id="adminPageLast">Last ⟫</button>
+        </div>
     </section>
 
     <!-- Modal Input -->
@@ -145,13 +155,54 @@
         </div>
     </div>
 
+    <!-- Delete All Confirmation Modal -->
+    <div id="deleteAllOverlay" class="modal-overlay" aria-hidden="true">
+        <div class="modal delete-all-modal" role="dialog" aria-modal="true">
+            <div class="modal-glow"></div>
+
+            <!-- Step 1: Warning -->
+            <div id="deleteStep1" class="delete-step">
+                <div class="delete-warning-icon">⚠️</div>
+                <h3 class="delete-title">Hapus Seluruh Record?</h3>
+                <p class="delete-desc">Tindakan ini akan <strong>menghapus semua data pertandingan</strong> secara permanen. Data yang sudah dihapus <strong>tidak dapat dikembalikan</strong>.</p>
+                <div class="delete-count" id="deleteCount">0 record akan dihapus</div>
+                <div class="delete-actions">
+                    <button id="btnDeleteAllCancel" class="btn ghost">Batal</button>
+                    <button id="btnDeleteAllConfirm" class="btn danger">Ya, Hapus Semua</button>
+                </div>
+            </div>
+
+            <!-- Step 2: Password -->
+            <div id="deleteStep2" class="delete-step" style="display:none">
+                <div class="delete-warning-icon">🔐</div>
+                <h3 class="delete-title">Konfirmasi Password</h3>
+                <p class="delete-desc">Masukkan password admin kamu untuk melanjutkan penghapusan.</p>
+                <div class="delete-password-wrap">
+                    <input id="deletePassword" type="password" class="input" placeholder="Password admin..." autocomplete="off" />
+                    <span id="deletePassError" class="delete-pass-error"></span>
+                </div>
+                <div class="delete-actions">
+                    <button id="btnDeletePassBack" class="btn ghost">Kembali</button>
+                    <button id="btnDeletePassSubmit" class="btn danger">🗑️ Konfirmasi Hapus</button>
+                </div>
+            </div>
+
+            <!-- Step 3: Progress -->
+            <div id="deleteStep3" class="delete-step" style="display:none">
+                <div class="delete-warning-icon">⏳</div>
+                <h3 class="delete-title">Menghapus...</h3>
+                <p class="delete-desc" id="deleteProgress">Mohon tunggu, sedang menghapus semua record...</p>
+            </div>
+        </div>
+    </div>
+
     <div class="footer">Hanya admin yang dapat mengubah data. Semua perubahan tercatat realtime.</div>
     </main>
 
     <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
-    import { getFirestore, collection, addDoc, serverTimestamp, onSnapshot, orderBy, query, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged, signOut, EmailAuthProvider, reauthenticateWithCredential } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+    import { getFirestore, collection, addDoc, serverTimestamp, onSnapshot, orderBy, query, deleteDoc, doc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyBKD7JAJHbeZC76XRoJ6lzVVwe0tLGSTno",
@@ -190,6 +241,8 @@
     let adminRange = 'all';
     let adminTerm = '';
     let adminView = [];
+    let adminPage = 1;
+    const perPage = 5;
 
     const fmt = new Intl.DateTimeFormat('id-ID', { dateStyle: 'medium', timeStyle: 'short' });
 
@@ -249,16 +302,43 @@
         modalOverlay.setAttribute('aria-hidden','true');
     };
 
+    // Pagination elements
+    const adminPageFirstBtn = document.getElementById('adminPageFirst');
+    const adminPagePrevBtn = document.getElementById('adminPagePrev');
+    const adminPageNextBtn = document.getElementById('adminPageNext');
+    const adminPageLastBtn = document.getElementById('adminPageLast');
+    const adminPageInfoEl = document.getElementById('adminPageInfo');
+
+    const getAdminTotalPages = (list) => Math.max(1, Math.ceil(list.length / perPage));
+
+    const updateAdminPagination = (list) => {
+        const totalP = getAdminTotalPages(list);
+        if (adminPage > totalP) adminPage = totalP;
+        adminPageInfoEl.textContent = `${adminPage} / ${totalP}`;
+        adminPageFirstBtn.disabled = adminPage <= 1;
+        adminPagePrevBtn.disabled = adminPage <= 1;
+        adminPageNextBtn.disabled = adminPage >= totalP;
+        adminPageLastBtn.disabled = adminPage >= totalP;
+    };
+
+    const getAdminPageSlice = (list) => {
+        const start = (adminPage - 1) * perPage;
+        return { slice: list.slice(start, start + perPage), startIdx: start };
+    };
+
     const renderAdmin = (list) => {
         if (!list.length) {
         tbody.innerHTML = `<tr><td colspan="7" style="color:#86a2d2;padding:16px">Tidak ada data untuk filter/pencarian ini.</td></tr>`;
         btnExport.disabled = true;
+        updateAdminPagination(list);
         return;
         }
 
-        const rows = list.map((m, idx) => `
+        const { slice, startIdx } = getAdminPageSlice(list);
+
+        const rows = slice.map((m, idx) => `
         <tr>
-            <td data-label="No">${idx + 1}</td>
+            <td data-label="No">${startIdx + idx + 1}</td>
             <td data-label="Marketing IGR">${m.mkt === 'W' ? '<span class="badge ok">MENANG</span>' : '<span class="badge no">KALAH</span>'}</td>
             <td data-label="TMI/GA United">${m.tmi === 'W' ? '<span class="badge ok">MENANG</span>' : '<span class="badge no">KALAH</span>'}</td>
             <td data-label="Pemenang">${m.winner}</td>
@@ -270,6 +350,7 @@
 
         tbody.innerHTML = rows.join('');
         btnExport.disabled = false;
+        updateAdminPagination(list);
 
         // Attach delete handlers
         [...tbody.querySelectorAll('button[data-id]')].forEach(b => {
@@ -311,10 +392,16 @@
     };
 
     // UI events
+    adminPageFirstBtn.addEventListener('click', () => { adminPage = 1; renderAdmin(adminView); });
+    adminPagePrevBtn.addEventListener('click', () => { adminPage = Math.max(1, adminPage - 1); renderAdmin(adminView); });
+    adminPageNextBtn.addEventListener('click', () => { adminPage = Math.min(getAdminTotalPages(adminView), adminPage + 1); renderAdmin(adminView); });
+    adminPageLastBtn.addEventListener('click', () => { adminPage = getAdminTotalPages(adminView); renderAdmin(adminView); });
+
     adminFilterBtns.forEach(btn => {
         btn.addEventListener('click', () => {
         adminRange = btn.dataset.range;
         adminFilterBtns.forEach(b => b.classList.toggle('active', b === btn));
+        adminPage = 1;
         applyAdmin();
         });
     });
@@ -328,6 +415,7 @@
         adminTerm = '';
         adminSearchEl.value = '';
         adminRange = 'all';
+        adminPage = 1;
         adminFilterBtns.forEach(b => b.classList.toggle('active', b.dataset.range === 'all'));
         applyAdmin();
     });
@@ -450,6 +538,103 @@
     document.getElementById('btnLogout').addEventListener('click', async () => {
         await signOut(auth);
         location.href = 'index.html';
+    });
+
+    // === DELETE ALL FLOW ===
+    const deleteAllOverlay = document.getElementById('deleteAllOverlay');
+    const deleteStep1 = document.getElementById('deleteStep1');
+    const deleteStep2 = document.getElementById('deleteStep2');
+    const deleteStep3 = document.getElementById('deleteStep3');
+    const deleteCountEl = document.getElementById('deleteCount');
+    const deletePassInput = document.getElementById('deletePassword');
+    const deletePassError = document.getElementById('deletePassError');
+
+    const showDeleteStep = (step) => {
+        deleteStep1.style.display = step === 1 ? '' : 'none';
+        deleteStep2.style.display = step === 2 ? '' : 'none';
+        deleteStep3.style.display = step === 3 ? '' : 'none';
+    };
+
+    const openDeleteAll = () => {
+        showDeleteStep(1);
+        deleteCountEl.textContent = `${allAdmin.length} record akan dihapus`;
+        deletePassInput.value = '';
+        deletePassError.textContent = '';
+        deleteAllOverlay.classList.add('show');
+        deleteAllOverlay.setAttribute('aria-hidden','false');
+    };
+
+    const closeDeleteAll = () => {
+        deleteAllOverlay.classList.remove('show');
+        deleteAllOverlay.setAttribute('aria-hidden','true');
+    };
+
+    document.getElementById('btnDeleteAll').addEventListener('click', openDeleteAll);
+    document.getElementById('btnDeleteAllCancel').addEventListener('click', closeDeleteAll);
+    document.getElementById('btnDeleteAllConfirm').addEventListener('click', () => {
+        showDeleteStep(2);
+        setTimeout(() => deletePassInput.focus(), 50);
+    });
+    document.getElementById('btnDeletePassBack').addEventListener('click', () => showDeleteStep(1));
+
+    deleteAllOverlay.addEventListener('click', (e) => {
+        if (e.target === deleteAllOverlay) closeDeleteAll();
+    });
+
+    document.getElementById('btnDeletePassSubmit').addEventListener('click', async () => {
+        const user = auth.currentUser;
+        if (!user) { alert('Sesi berakhir.'); location.href = 'login.html'; return; }
+
+        const pw = deletePassInput.value.trim();
+        if (!pw) { deletePassError.textContent = 'Password tidak boleh kosong.'; return; }
+
+        deletePassError.textContent = '';
+
+        try {
+            // Re-authenticate to verify password
+            const credential = EmailAuthProvider.credential(user.email, pw);
+            await reauthenticateWithCredential(user, credential);
+        } catch (e) {
+            deletePassError.textContent = 'Password salah. Coba lagi.';
+            return;
+        }
+
+        // Password correct — proceed to delete all
+        showDeleteStep(3);
+        const adminName = user.email.replace('@local.login', '');
+
+        try {
+            const snap = await getDocs(collection(db, 'matches'));
+            const total = snap.size;
+            let deleted = 0;
+
+            // Log the bulk delete action
+            await addDoc(collection(db, 'activity_log'), {
+                action: 'delete',
+                adminName,
+                adminUid: user.uid,
+                matchId: 'BULK_DELETE',
+                matchInfo: `Menghapus semua record (${total} pertandingan)`,
+                timestamp: serverTimestamp()
+            });
+
+            // Delete all documents
+            const deletePromises = [];
+            snap.forEach(d => {
+                deletePromises.push(deleteDoc(doc(db, 'matches', d.id)));
+            });
+            await Promise.all(deletePromises);
+
+            document.getElementById('deleteProgress').textContent = `Berhasil menghapus ${total} record.`;
+            setTimeout(() => closeDeleteAll(), 1500);
+        } catch (e) {
+            document.getElementById('deleteProgress').textContent = 'Gagal menghapus: ' + (e?.message || '');
+            setTimeout(() => closeDeleteAll(), 3000);
+        }
+    });
+
+    deletePassInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') document.getElementById('btnDeletePassSubmit').click();
     });
     </script>
 </body>

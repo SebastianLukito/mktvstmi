@@ -561,6 +561,52 @@ main.container{
   .filters .btn.chip{ text-align:center; padding:8px 4px; font-size:11px; }
 }
 
+/* ---------- PAGINATION ---------- */
+.pagination{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  margin-top:14px;
+  flex-wrap:wrap;
+}
+.pagination .page-btn{
+  appearance:none;
+  border:1px solid rgba(64,255,217,.2);
+  background:linear-gradient(180deg, rgba(12,17,36,.7), rgba(12,17,36,.5));
+  color:#bcd0ff;
+  font-size:12px;
+  font-weight:700;
+  letter-spacing:.3px;
+  padding:8px 14px;
+  border-radius:10px;
+  cursor:pointer;
+  transition:all .2s;
+  outline:none;
+}
+.pagination .page-btn:hover:not(:disabled){
+  border-color:rgba(64,255,217,.5);
+  background:linear-gradient(180deg, rgba(64,255,217,.12), rgba(59,227,255,.08));
+  color:#dff7ff;
+  box-shadow:0 0 12px rgba(64,255,217,.15);
+}
+.pagination .page-btn:disabled{
+  opacity:.35;
+  cursor:not-allowed;
+}
+.pagination .page-info{
+  font-size:12px;
+  color:var(--muted);
+  padding:0 8px;
+  letter-spacing:.3px;
+  white-space:nowrap;
+}
+@media (max-width:480px){
+  .pagination{ gap:4px; }
+  .pagination .page-btn{ padding:7px 10px; font-size:11px; }
+  .pagination .page-info{ font-size:11px; padding:0 4px; }
+}
+
 /* ---------- FOOTER ---------- */
 .footer{
 margin-top:20px;

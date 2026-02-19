@@ -99,6 +99,15 @@
             <!-- diisi via JS -->
         </tbody>
         </table>
+
+        <!-- Pagination -->
+        <div class="pagination" id="pagination">
+            <button class="page-btn" id="pageFirst">⟪ First</button>
+            <button class="page-btn" id="pagePrev">‹ Prev</button>
+            <span class="page-info" id="pageInfo">1 / 1</span>
+            <button class="page-btn" id="pageNext">Next ›</button>
+            <button class="page-btn" id="pageLast">Last ⟫</button>
+        </div>
     </section>
 
     <!-- History Modal -->
@@ -157,6 +166,8 @@
     let activeRange = 'all';
     let searchTerm = '';
     let currentView = [];
+    let currentPage = 1;
+    const perPage = 5;
 
     const fmt = new Intl.DateTimeFormat('id-ID', { dateStyle: 'medium', timeStyle: 'short' });
 
@@ -186,15 +197,42 @@
         return `${m.winner} ${marketing} ${tmi} ${m.timeText}`.toLowerCase();
     };
 
+    // Pagination elements
+    const pageFirstBtn = document.getElementById('pageFirst');
+    const pagePrevBtn = document.getElementById('pagePrev');
+    const pageNextBtn = document.getElementById('pageNext');
+    const pageLastBtn = document.getElementById('pageLast');
+    const pageInfoEl = document.getElementById('pageInfo');
+
+    const getTotalPages = (list) => Math.max(1, Math.ceil(list.length / perPage));
+
+    const updatePagination = (list) => {
+        const total = getTotalPages(list);
+        if (currentPage > total) currentPage = total;
+        pageInfoEl.textContent = `${currentPage} / ${total}`;
+        pageFirstBtn.disabled = currentPage <= 1;
+        pagePrevBtn.disabled = currentPage <= 1;
+        pageNextBtn.disabled = currentPage >= total;
+        pageLastBtn.disabled = currentPage >= total;
+    };
+
+    const getPageSlice = (list) => {
+        const start = (currentPage - 1) * perPage;
+        return { slice: list.slice(start, start + perPage), startIdx: start };
+    };
+
     const renderTable = (list) => {
         if (!list.length) {
         tbody.innerHTML = `<tr><td colspan="6" style="color:#86a2d2;padding:16px">Tidak ada data untuk filter/pencarian ini.</td></tr>`;
+        updatePagination(list);
         return;
         }
 
-        const rows = list.map((m, idx) => `
+        const { slice, startIdx } = getPageSlice(list);
+
+        const rows = slice.map((m, idx) => `
         <tr>
-            <td data-label="#">${idx + 1}</td>
+            <td data-label="#">${startIdx + idx + 1}</td>
             <td data-label="Marketing IGR">${m.mkt === 'W' ? '<span class="badge ok">MENANG</span>' : '<span class="badge no">KALAH</span>'}</td>
             <td data-label="TMI/GA United">${m.tmi === 'W' ? '<span class="badge ok">MENANG</span>' : '<span class="badge no">KALAH</span>'}</td>
             <td data-label="Pemenang">${m.winner}</td>
@@ -204,6 +242,7 @@
         `);
 
         tbody.innerHTML = rows.join('');
+        updatePagination(list);
     };
 
     const applyFilters = () => {
@@ -224,10 +263,16 @@
     };
 
     // UI events
+    pageFirstBtn.addEventListener('click', () => { currentPage = 1; renderTable(currentView); });
+    pagePrevBtn.addEventListener('click', () => { currentPage = Math.max(1, currentPage - 1); renderTable(currentView); });
+    pageNextBtn.addEventListener('click', () => { currentPage = Math.min(getTotalPages(currentView), currentPage + 1); renderTable(currentView); });
+    pageLastBtn.addEventListener('click', () => { currentPage = getTotalPages(currentView); renderTable(currentView); });
+
     filterBtns.forEach(btn => {
         btn.addEventListener('click', () => {
         activeRange = btn.dataset.range;
         filterBtns.forEach(b => b.classList.toggle('active', b === btn));
+        currentPage = 1;
         applyFilters();
         });
     });
@@ -241,6 +286,7 @@
         searchTerm = '';
         searchEl.value = '';
         activeRange = 'all';
+        currentPage = 1;
         filterBtns.forEach(b => b.classList.toggle('active', b.dataset.range === 'all'));
         applyFilters();
     });
