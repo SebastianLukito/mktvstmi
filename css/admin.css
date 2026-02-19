@@ -625,3 +625,135 @@
   .filters .btn.chip{ text-align:center; padding:8px 4px; font-size:11px; }
   #btnExportCsv{ width:100%; text-align:center; }
 }
+
+/* =====================
+   MOBILE PERFORMANCE FIX
+   Kill/simplify heavy animations on mobile to prevent lag & flicker
+   ===================== */
+@media (max-width:768px){
+  /* --- Stop ALL continuous box-shadow animations --- */
+  .badge.ok,
+  .badge.no{
+    animation:none !important;
+  }
+  .dot{
+    animation:none !important;
+    box-shadow:0 0 8px var(--neon-cyan);
+  }
+
+  /* --- Kill floating orbs (body::before/after) --- */
+  body::before,
+  body::after{
+    animation:none !important;
+    opacity:.15 !important;
+  }
+
+  /* --- Simplify topbar: remove blur --- */
+  .topbar{
+    backdrop-filter:none !important;
+    -webkit-backdrop-filter:none !important;
+    background:rgba(10,15,30,.95) !important;
+  }
+  .topbar::after{
+    animation:none !important;
+    opacity:.5 !important;
+  }
+
+  /* --- Panel: stop edge glow + pseudo pulse --- */
+  .panel::before{
+    animation:none !important;
+    border-color:rgba(64,255,217,.18) !important;
+  }
+  .panel::after{
+    animation:none !important;
+    opacity:.4 !important;
+  }
+  .container > section:nth-child(n+2)::before{
+    animation:none !important;
+  }
+  .container > section:nth-child(n+2)::after{
+    animation:none !important;
+  }
+
+  /* --- Button "Input Hasil": stop saveGlow + shimmer --- */
+  .btn.big{
+    animation:none !important;
+    box-shadow:0 0 12px rgba(64,255,217,.3), 0 4px 16px rgba(64,255,217,.15);
+  }
+  .btn.big::after{
+    animation:none !important;
+    display:none;
+  }
+
+  /* --- Modal overlay: remove expensive backdrop blur --- */
+  .modal-overlay{
+    backdrop-filter:none !important;
+    -webkit-backdrop-filter:none !important;
+    background:rgba(4,8,20,.92) !important;
+  }
+
+  /* --- Modal: stop glow disc + ambient line animations --- */
+  .modal-glow{
+    animation:none !important;
+    opacity:.4;
+  }
+  .modal::after{
+    animation:none !important;
+    opacity:.5;
+  }
+
+  /* --- Team cards: stop glowPulse --- */
+  .team-card--mkt,
+  .team-card--tmi{
+    animation:none !important;
+  }
+
+  /* --- Logo ring: stop spinning --- */
+  .logo-ring{
+    animation:none !important;
+  }
+
+  /* --- VS badge: stop pulse & spin --- */
+  .vs-ring{
+    animation:none !important;
+  }
+  .vs-text{
+    animation:none !important;
+    text-shadow:0 0 12px #fff, 0 0 24px rgba(64,255,217,.7);
+  }
+
+  /* --- Save button: stop glow --- */
+  .save-btn{
+    animation:none !important;
+    box-shadow:0 0 10px rgba(64,255,217,.3);
+  }
+
+  /* --- Delete modal warning icon: stop pulse --- */
+  .delete-warning-icon{
+    animation:none !important;
+  }
+
+  /* --- GPU acceleration hints for remaining transitions --- */
+  .modal,
+  .team-card,
+  .card{
+    will-change:auto;
+    backface-visibility:hidden;
+    -webkit-backface-visibility:hidden;
+    transform:translate3d(0,0,0);
+  }
+}
+
+/* Also respect user preference for reduced motion */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:0.001ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:0.001ms !important;
+  }
+  .topbar,
+  .modal-overlay{
+    backdrop-filter:none !important;
+    -webkit-backdrop-filter:none !important;
+  }
+}

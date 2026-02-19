@@ -601,10 +601,43 @@ main.container{
   letter-spacing:.3px;
   white-space:nowrap;
 }
-@media (max-width:480px){
-  .pagination{ gap:4px; }
-  .pagination .page-btn{ padding:7px 10px; font-size:11px; }
-  .pagination .page-info{ font-size:11px; padding:0 4px; }
+@media (max-width:620px){
+  .pagination{
+    gap:6px;
+    margin-top:12px;
+    padding:10px 0;
+    flex-wrap:wrap;
+    justify-content:center;
+  }
+  .pagination .page-btn{
+    padding:9px 12px;
+    font-size:11.5px;
+    border-radius:8px;
+    min-width:0;
+  }
+  .pagination .page-info{
+    font-size:11.5px;
+    padding:0 6px;
+    width:100%;
+    text-align:center;
+    order:-1;
+    margin-bottom:4px;
+  }
+}
+@media (max-width:420px){
+  .pagination{ gap:3px; }
+  .pagination .page-btn{
+    padding:8px 8px;
+    font-size:10.5px;
+    letter-spacing:0;
+    flex:1 1 auto;
+    text-align:center;
+  }
+  .pagination .page-info{
+    font-size:10.5px;
+    padding:0 2px;
+    margin-bottom:2px;
+  }
 }
 
 /* ---------- FOOTER ---------- */
