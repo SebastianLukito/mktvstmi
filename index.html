@@ -8,55 +8,43 @@
     <link rel="stylesheet" href="css/styles.css" />
     <link rel="icon" href="asset/mktlogo.png">
 
-    <!-- Tools styling (self-contained, biar tetap rapi walau CSS belum diubah) -->
-    <style>
-    .table-tools{
-        display:flex; flex-wrap:wrap; gap:10px;
-        align-items:center; justify-content:space-between;
-        margin:8px 0 6px;
-    }
-    .filters{ display:flex; flex-wrap:wrap; gap:8px; }
-    .btn.chip{
-        padding:8px 12px; border-radius:999px; font-size:12px;
-    }
-    .btn.chip.active{
-        background:linear-gradient(90deg, rgba(64,255,217,.22), rgba(59,227,255,.18));
-        border-color:rgba(64,255,217,.55);
-        color:#dff7ff;
-    }
-    .search-wrap{
-        display:flex; gap:8px; align-items:center;
-        flex:1 1 320px; min-width:220px;
-    }
-    .input{
-        width:100%;
-        padding:10px 12px;
-        border-radius:14px;
-        border:1px solid rgba(157,179,217,.22);
-        background:linear-gradient(180deg, rgba(12,17,36,.65), rgba(12,17,36,.5));
-        color:#e5f2ff;
-        outline:none;
-    }
-    .input:focus{
-        border-color: rgba(64,255,217,.5);
-        box-shadow: 0 0 0 3px rgba(64,255,217,.18);
-    }
-    @media (max-width:600px){
-        .table-tools{ flex-direction:column; align-items:stretch; }
-        .search-wrap{ flex:1 1 auto; min-width:0; }
-        .filters .btn{ flex:1 1 auto; }
-    }
-    </style>
+    <!-- Tools styling now in styles.css -->
 </head>
 
 <body>
+    <!-- Fire effects -->
+    <div class="fire-left" aria-hidden="true">
+        <div class="flame f1"></div>
+        <div class="flame f2"></div>
+        <div class="flame f3"></div>
+        <div class="flame f4"></div>
+        <div class="flame f5"></div>
+        <div class="flame f6"></div>
+        <div class="tongue t1"></div>
+        <div class="tongue t2"></div>
+        <div class="tongue t3"></div>
+        <div class="tongue t4"></div>
+    </div>
+    <div class="fire-right" aria-hidden="true">
+        <div class="flame f1"></div>
+        <div class="flame f2"></div>
+        <div class="flame f3"></div>
+        <div class="flame f4"></div>
+        <div class="flame f5"></div>
+        <div class="flame f6"></div>
+        <div class="tongue t1"></div>
+        <div class="tongue t2"></div>
+        <div class="tongue t3"></div>
+        <div class="tongue t4"></div>
+    </div>
     <header class="topbar">
     <div class="topbar-inner">
         <div class="brand">
         <span class="dot"></span>
         MKT IGR vs TMI/GA United
         </div>
-        <nav>
+        <nav style="display:flex;gap:8px;align-items:center">
+        <button id="btnHistory" class="btn ghost" style="font-size:13px">📋 History</button>
         <a class="btn ghost" href="login.html">Login</a>
         </nav>
     </div>
@@ -104,6 +92,7 @@
             <th>TMI/GA United</th>
             <th>Pemenang</th>
             <th>Waktu</th>
+            <th>Editor</th>
             </tr>
         </thead>
         <tbody id="tbodyMatches">
@@ -111,6 +100,19 @@
         </tbody>
         </table>
     </section>
+
+    <!-- History Modal -->
+    <div id="historyOverlay" class="history-overlay" aria-hidden="true">
+        <div class="history-modal">
+            <div class="history-header">
+                <h3>📋 Riwayat Aktivitas Admin</h3>
+                <button id="btnCloseHistory" class="btn ghost close-history" aria-label="Tutup">✕</button>
+            </div>
+            <div class="history-body" id="historyBody">
+                <div class="history-empty">Memuat...</div>
+            </div>
+        </div>
+    </div>
 
     <div class="footer">
         ©WKWKWK
@@ -121,7 +123,7 @@
     <script type="module">
     // === Firebase v9 modular (CDN) ===
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
-    import { getFirestore, collection, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+    import { getFirestore, collection, onSnapshot, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
     // Konfigurasi project kamu
     const firebaseConfig = {
@@ -186,17 +188,18 @@
 
     const renderTable = (list) => {
         if (!list.length) {
-        tbody.innerHTML = `<tr><td colspan="5" style="color:#86a2d2;padding:16px">Tidak ada data untuk filter/pencarian ini.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6" style="color:#86a2d2;padding:16px">Tidak ada data untuk filter/pencarian ini.</td></tr>`;
         return;
         }
 
         const rows = list.map((m, idx) => `
         <tr>
-            <td>${idx + 1}</td>
-            <td>${m.mkt === 'W' ? '<span class="badge ok">MENANG</span>' : '<span class="badge no">KALAH</span>'}</td>
-            <td>${m.tmi === 'W' ? '<span class="badge ok">MENANG</span>' : '<span class="badge no">KALAH</span>'}</td>
-            <td>${m.winner}</td>
-            <td>${m.timeText}</td>
+            <td data-label="#">${idx + 1}</td>
+            <td data-label="Marketing IGR">${m.mkt === 'W' ? '<span class="badge ok">MENANG</span>' : '<span class="badge no">KALAH</span>'}</td>
+            <td data-label="TMI/GA United">${m.tmi === 'W' ? '<span class="badge ok">MENANG</span>' : '<span class="badge no">KALAH</span>'}</td>
+            <td data-label="Pemenang">${m.winner}</td>
+            <td data-label="Waktu">${m.timeText}</td>
+            <td data-label="Editor">${m.editor}</td>
         </tr>
         `);
 
@@ -261,7 +264,7 @@
         const ts = toDateSafe(d.createdAt);
         const timeText = fmt.format(ts);
 
-        const m = { id: docSnap.id, mkt: d.mkt, tmi: d.tmi, winner, ts, timeText };
+        const m = { id: docSnap.id, mkt: d.mkt, tmi: d.tmi, winner, ts, timeText, editor: d.createdByName || '-' };
         m.search = makeSearchText(m);
 
         allMatches.push(m);
@@ -272,6 +275,57 @@
         elT.textContent = tWin;
 
         applyFilters();
+    });
+
+    // === History Modal ===
+    const historyOverlay = document.getElementById('historyOverlay');
+    const historyBody = document.getElementById('historyBody');
+    const btnHistory = document.getElementById('btnHistory');
+    const btnCloseHistory = document.getElementById('btnCloseHistory');
+
+    btnHistory.addEventListener('click', () => {
+        historyOverlay.classList.add('show');
+        historyOverlay.setAttribute('aria-hidden','false');
+    });
+    btnCloseHistory.addEventListener('click', () => {
+        historyOverlay.classList.remove('show');
+        historyOverlay.setAttribute('aria-hidden','true');
+    });
+    historyOverlay.addEventListener('click', (e) => {
+        if (e.target === historyOverlay) {
+            historyOverlay.classList.remove('show');
+            historyOverlay.setAttribute('aria-hidden','true');
+        }
+    });
+
+    const qHistory = query(collection(db, 'activity_log'), orderBy('timestamp','desc'), limit(50));
+    onSnapshot(qHistory, snap => {
+        if (snap.empty) {
+            historyBody.innerHTML = '<div class="history-empty">Belum ada aktivitas tercatat.</div>';
+            return;
+        }
+        let html = '';
+        snap.forEach(docSnap => {
+            const a = docSnap.data();
+            const ts = toDateSafe(a.timestamp);
+            const timeText = fmt.format(ts);
+            const isAdd = a.action === 'add';
+            const icon = isAdd ? '➕' : '🗑️';
+            const cls = isAdd ? 'add' : 'delete';
+            const text = isAdd
+                ? `Menambahkan pertandingan: ${a.matchInfo || '-'}`
+                : `Menghapus pertandingan: ${a.matchInfo || '-'}`;
+            html += `
+            <div class="history-item">
+                <div class="history-icon ${cls}">${icon}</div>
+                <div class="history-info">
+                    <div class="history-admin">${a.adminName || 'Unknown'}</div>
+                    <div class="history-action">${text}</div>
+                    <div class="history-time">${timeText}</div>
+                </div>
+            </div>`;
+        });
+        historyBody.innerHTML = html;
     });
     </script>
 </body>

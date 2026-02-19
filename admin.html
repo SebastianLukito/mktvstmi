@@ -8,45 +8,7 @@
     <link rel="stylesheet" href="css/admin.css"/>
     <link rel="icon" href="asset/mktlogo.png">
 
-    <!-- Tools styling (self-contained) -->
-    <style>
-    .table-tools{
-        display:flex; flex-wrap:wrap; gap:10px;
-        align-items:center; justify-content:space-between;
-        margin:8px 0 6px;
-    }
-    .filters{ display:flex; flex-wrap:wrap; gap:8px; }
-    .btn.chip{
-        padding:8px 12px; border-radius:999px; font-size:12px;
-    }
-    .btn.chip.active{
-        background:linear-gradient(90deg, rgba(64,255,217,.22), rgba(59,227,255,.18));
-        border-color:rgba(64,255,217,.55);
-        color:#dff7ff;
-    }
-    .search-wrap{
-        display:flex; gap:8px; align-items:center;
-        flex:1 1 320px; min-width:220px;
-    }
-    .input{
-        width:100%;
-        padding:10px 12px;
-        border-radius:14px;
-        border:1px solid rgba(157,179,217,.22);
-        background:linear-gradient(180deg, rgba(12,17,36,.65), rgba(12,17,36,.5));
-        color:#e5f2ff;
-        outline:none;
-    }
-    .input:focus{
-        border-color: rgba(64,255,217,.5);
-        box-shadow: 0 0 0 3px rgba(64,255,217,.18);
-    }
-    @media (max-width:600px){
-        .table-tools{ flex-direction:column; align-items:stretch; }
-        .search-wrap{ flex:1 1 auto; min-width:0; }
-        .filters .btn{ flex:1 1 auto; }
-    }
-    </style>
+    <!-- Tools styling handled by admin.css -->
 </head>
 
 <body>
@@ -65,54 +27,12 @@
 
     <main class="container">
     <section class="card">
-        <h2 style="margin-bottom:12px">Input Statistik Pertandingan</h2>
-        <div class="sub" style="margin-bottom:18px">
-        Tentukan hasil: <b>MENANG/KALAH</b> untuk masing-masing tim (otomatis saling melengkapi).
+        <div class="card-head">
+        <div>
+            <h2 style="margin-bottom:10px">Input Statistik Pertandingan</h2>
+            <div class="sub">Tentukan hasil: <b>MENANG/KALAH</b> untuk masing-masing tim (otomatis saling melengkapi).</div>
         </div>
-
-        <div class="form-row">
-        <!-- Left / MKT -->
-        <div class="panel">
-            <div class="team-box">
-            <div class="team-logo">
-                <img src="asset/mktlogo.png" alt="Marketing IGR"/>
-            </div>
-            <div>
-                <div class="team-name">MARKETING IGR</div>
-                <div class="sub">Indogrosir</div>
-            </div>
-            </div>
-            <div style="margin-top:14px">
-            <select id="mktSelect" class="select">
-                <option value="W">MENANG</option>
-                <option value="L">KALAH</option>
-            </select>
-            </div>
-        </div>
-
-        <!-- Right / TMI -->
-        <div class="panel">
-            <div class="team-box right">
-            <div class="team-logo">
-                <img src="asset/tmilogo.png" alt="TMI/GA United"/>
-            </div>
-            <div style="text-align:right">
-                <div class="team-name">TMI / GA UNITED</div>
-                <div class="sub">+GA IDM x IGR</div>
-            </div>
-            </div>
-            <div style="margin-top:14px">
-            <select id="tmiSelect" class="select">
-                <option value="L">KALAH</option>
-                <option value="W">MENANG</option>
-            </select>
-            </div>
-        </div>
-        </div>
-
-        <div class="actions">
-        <button id="btnSave" class="btn primary">Simpan Rekam</button>
-        <span id="info" class="sub" style="align-self:center"></span>
+        <button id="btnOpenModal" class="btn primary big">Input Hasil Pertandingan Baru</button>
         </div>
     </section>
 
@@ -147,12 +67,83 @@
             <th>TMI/GA United</th>
             <th>Pemenang</th>
             <th>Waktu</th>
+            <th>Editor</th>
             <th>Aksi</th>
             </tr>
         </thead>
         <tbody id="adminTbody"></tbody>
         </table>
     </section>
+
+    <!-- Modal Input -->
+    <div id="modalOverlay" class="modal-overlay" aria-hidden="true">
+        <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+
+        <!-- Glow ring animasi -->
+        <div class="modal-glow"></div>
+
+        <div class="modal-header">
+            <div>
+            <div class="eyebrow">⚡ Form Input Hasil</div>
+            <h3 id="modalTitle">Pertandingan Baru</h3>
+            </div>
+            <button id="btnCloseModal" class="btn ghost close-btn" aria-label="Tutup">✕</button>
+        </div>
+
+        <div class="matchup-row">
+
+            <!-- Left / MKT -->
+            <div class="team-card team-card--mkt">
+            <div class="team-card__logo">
+                <img src="asset/mktlogo.png" alt="Marketing IGR"/>
+                <div class="logo-ring"></div>
+            </div>
+            <div class="team-card__info">
+                <div class="team-name">MARKETING IGR</div>
+                <div class="sub">Indogrosir</div>
+            </div>
+            <select id="mktSelect" class="select select--mkt">
+                <option value="" selected disabled>— Pilih hasil —</option>
+                <option value="W">🏆 MENANG</option>
+                <option value="L">❌ KALAH</option>
+            </select>
+            </div>
+
+            <!-- VS Badge -->
+            <div class="vs-badge">
+            <span class="vs-text">VS</span>
+            <div class="vs-ring"></div>
+            </div>
+
+            <!-- Right / TMI -->
+            <div class="team-card team-card--tmi">
+            <div class="team-card__logo">
+                <img src="asset/tmilogo.png" alt="TMI/GA United"/>
+                <div class="logo-ring"></div>
+            </div>
+            <div class="team-card__info">
+                <div class="team-name">TMI / GA UNITED</div>
+                <div class="sub">+GA IDM x IGR</div>
+            </div>
+            <select id="tmiSelect" class="select select--tmi">
+                <option value="" selected disabled>— Pilih hasil —</option>
+                <option value="W">🏆 MENANG</option>
+                <option value="L">❌ KALAH</option>
+            </select>
+            </div>
+
+        </div>
+
+        <div class="modal-footer">
+            <span id="info" class="info-msg"></span>
+            <div class="modal-btns">
+            <button id="btnCancelModal" class="btn ghost">Batal</button>
+            <button id="btnSave" class="btn primary save-btn">💾 Simpan Rekam</button>
+            </div>
+        </div>
+
+        </div>
+    </div>
 
     <div class="footer">Hanya admin yang dapat mengubah data. Semua perubahan tercatat realtime.</div>
     </main>
@@ -189,6 +180,10 @@
     const adminSearchEl = document.getElementById('adminSearch');
     const adminClearBtn = document.getElementById('adminClear');
     const btnExport = document.getElementById('btnExportCsv');
+    const btnOpenModal = document.getElementById('btnOpenModal');
+    const btnCloseModal = document.getElementById('btnCloseModal');
+    const btnCancelModal = document.getElementById('btnCancelModal');
+    const modalOverlay = document.getElementById('modalOverlay');
 
     // State
     let allAdmin = [];
@@ -221,31 +216,55 @@
     };
 
     // Mutual select: jika MKT menang -> TMI kalah, dan sebaliknya
+    const invertResult = (v) => v === 'W' ? 'L' : (v === 'L' ? 'W' : '');
+
+    // Sinkronkan select: saat salah satu diisi, lainnya otomatis kebalikan
     const syncSelect = () => {
         if (document.activeElement === elM) {
-        elT.value = (elM.value === 'W') ? 'L' : 'W';
+        elT.value = invertResult(elM.value);
         } else if (document.activeElement === elT) {
-        elM.value = (elT.value === 'W') ? 'L' : 'W';
+        elM.value = invertResult(elT.value);
         }
     };
     elM.addEventListener('change', syncSelect);
     elT.addEventListener('change', syncSelect);
 
+    // Modal helpers
+    const resetForm = () => {
+        elM.value = '';
+        elT.value = '';
+        info.textContent = '';
+        info.style.color = '#e5f2ff';
+    };
+
+    const openModal = () => {
+        resetForm();
+        modalOverlay.classList.add('show');
+        modalOverlay.setAttribute('aria-hidden','false');
+        setTimeout(() => elM.focus(), 50);
+    };
+
+    const closeModal = () => {
+        modalOverlay.classList.remove('show');
+        modalOverlay.setAttribute('aria-hidden','true');
+    };
+
     const renderAdmin = (list) => {
         if (!list.length) {
-        tbody.innerHTML = `<tr><td colspan="6" style="color:#86a2d2;padding:16px">Tidak ada data untuk filter/pencarian ini.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7" style="color:#86a2d2;padding:16px">Tidak ada data untuk filter/pencarian ini.</td></tr>`;
         btnExport.disabled = true;
         return;
         }
 
         const rows = list.map((m, idx) => `
         <tr>
-            <td>${idx + 1}</td>
-            <td>${m.mkt === 'W' ? '<span class="badge ok">MENANG</span>' : '<span class="badge no">KALAH</span>'}</td>
-            <td>${m.tmi === 'W' ? '<span class="badge ok">MENANG</span>' : '<span class="badge no">KALAH</span>'}</td>
-            <td>${m.winner}</td>
-            <td>${m.timeText}</td>
-            <td><button class="btn danger" data-id="${m.id}">Delete</button></td>
+            <td data-label="No">${idx + 1}</td>
+            <td data-label="Marketing IGR">${m.mkt === 'W' ? '<span class="badge ok">MENANG</span>' : '<span class="badge no">KALAH</span>'}</td>
+            <td data-label="TMI/GA United">${m.tmi === 'W' ? '<span class="badge ok">MENANG</span>' : '<span class="badge no">KALAH</span>'}</td>
+            <td data-label="Pemenang">${m.winner}</td>
+            <td data-label="Waktu">${m.timeText}</td>
+            <td data-label="Editor">${m.editor}</td>
+            <td data-label="Aksi"><button class="btn danger" data-id="${m.id}">Delete</button></td>
         </tr>
         `);
 
@@ -256,7 +275,18 @@
         [...tbody.querySelectorAll('button[data-id]')].forEach(b => {
         b.onclick = async () => {
             if (confirm('Hapus record ini?')) {
-            await deleteDoc(doc(db, 'matches', b.dataset.id));
+            const matchId = b.dataset.id;
+            const match = allAdmin.find(x => x.id === matchId);
+            const adminName = auth.currentUser.email.replace('@local.login', '');
+            await addDoc(collection(db, 'activity_log'), {
+                action: 'delete',
+                adminName,
+                adminUid: auth.currentUser.uid,
+                matchId,
+                matchInfo: match ? `${match.winner} (${match.timeText})` : '-',
+                timestamp: serverTimestamp()
+            });
+            await deleteDoc(doc(db, 'matches', matchId));
             }
         };
         });
@@ -300,6 +330,14 @@
         adminRange = 'all';
         adminFilterBtns.forEach(b => b.classList.toggle('active', b.dataset.range === 'all'));
         applyAdmin();
+    });
+
+    // Modal events
+    btnOpenModal.addEventListener('click', openModal);
+    btnCloseModal.addEventListener('click', closeModal);
+    btnCancelModal.addEventListener('click', closeModal);
+    modalOverlay.addEventListener('click', (e) => {
+        if (e.target === modalOverlay) closeModal();
     });
 
     // CSV export (yang sedang tampil setelah filter/search)
@@ -361,7 +399,7 @@
             const ts = toDateSafe(data.createdAt);
             const timeText = fmt.format(ts);
 
-            const m = { id: d.id, mkt: data.mkt, tmi: data.tmi, winner, ts, timeText };
+            const m = { id: d.id, mkt: data.mkt, tmi: data.tmi, winner, ts, timeText, editor: data.createdByName || '-' };
             m.search = makeSearchText(m);
 
             allAdmin.push(m);
@@ -378,17 +416,31 @@
 
         const m = elM.value;
         const t = elT.value;
-        if (m === t) { info.textContent = 'Hasil harus berbeda (satu menang, satu kalah).'; return; }
+
+        if (!m || !t) { info.textContent = 'Pilih hasil untuk kedua tim terlebih dahulu.'; info.style.color = '#ffd6de'; return; }
+        if (m === t) { info.textContent = 'Hasil harus berbeda (satu menang, satu kalah).'; info.style.color = '#ffd6de'; return; }
 
         try {
-        await addDoc(collection(db,'matches'), {
+        const adminName = user.email.replace('@local.login', '');
+        const winnerLabel = m === 'W' ? 'Marketing IGR Menang' : 'TMI/GA United Menang';
+        const docRef = await addDoc(collection(db,'matches'), {
             mkt: m,
             tmi: t,
             createdBy: user.uid,
+            createdByName: adminName,
             createdAt: serverTimestamp()
+        });
+        await addDoc(collection(db,'activity_log'), {
+            action: 'add',
+            adminName,
+            adminUid: user.uid,
+            matchId: docRef.id,
+            matchInfo: winnerLabel,
+            timestamp: serverTimestamp()
         });
         info.style.color = '#a7ffd7';
         info.textContent = 'Tersimpan.';
+        closeModal();
         } catch (e) {
         info.style.color = '#ffd6de';
         info.textContent = 'Gagal menyimpan: ' + (e?.message || '');

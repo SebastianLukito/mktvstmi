@@ -20,24 +20,28 @@
 
         <main class="container">
             <div class="card">
-                <h2 style="margin-bottom:10px">Login Admin</h2>
-                <p class="sub" style="margin-bottom:18px">Masukkan username & password untuk menginput statistik.</p>
+                <!-- Decorative animated layers -->
+                <div class="card-inner-ring"></div>
+                <div class="card-scan"></div>
+
+                <div class="card-eyebrow">⚡ Admin Panel</div>
+                <h2>Login Admin</h2>
+                <p class="sub">Masukkan kredensial untuk mengakses panel.</p>
 
                 <div class="form-row">
-                    <div>
-                        <label class="sub">Username</label>
-                        <input id="username" class="select" placeholder="Masukan Username" />
+                    <div class="field">
+                        <label for="username">Username</label>
+                        <input id="username" class="select" placeholder="Masukan username" autocomplete="username" />
                     </div>
-                    <div>
-                        <label class="sub">Password</label>
-                        <input id="password" type="password" class="select" placeholder="Masukan Password" />
+                    <div class="field">
+                        <label for="password">Password</label>
+                        <input id="password" type="password" class="select" placeholder="Masukan password" autocomplete="current-password" />
                     </div>
                 </div>
                 <div class="actions">
-                    <button id="btnLogin" class="btn primary">Login</button>
-                    <!-- <a class="btn ghost" href="index.html">Kembali ke Home</a> -->
+                    <button id="btnLogin" class="btn-login">🚀 Login</button>
                 </div>
-                <div id="msg" style="margin-top:12px;color:#ffb8c7;"></div>
+                <div id="msg"></div>
             </div>
             <div class="footer">
                 ©Sebastianus Lukito
@@ -70,7 +74,14 @@
             // Mapping "username" -> email untuk Firebase Auth
             const toEmail = (username) => `${username}@local.login`;
 
-            document.getElementById('btnLogin').addEventListener('click', async () => {
+            document.getElementById('btnLogin').addEventListener('click', doLogin);
+
+            // Enter key support
+            [elU, elP].forEach(el => el.addEventListener('keydown', e => {
+                if (e.key === 'Enter') doLogin();
+            }));
+
+            async function doLogin(){
             elM.textContent = '';
             const u = elU.value.trim();
             const p = elP.value;
@@ -81,7 +92,7 @@
             }catch(err){
                 elM.textContent = 'Login gagal: ' + (err?.message || 'periksa kredensial.');
             }
-            });
+            }
         </script>
     </body>
 </html>
